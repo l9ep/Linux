@@ -10,11 +10,12 @@
 ```
 
 **Roblox Script Hub**  
-*Built by xyth*
+*Built by yuki*
 
-![Status](https://img.shields.io/badge/status-testing-yellow?style=flat-square&labelColor=0d1117)
-![Version](https://img.shields.io/badge/version-1.0-blue?style=flat-square&labelColor=0d1117)
-![Platform](https://img.shields.io/badge/platform-GitHub%20Pages-brightgreen?style=flat-square&labelColor=0d1117)
+![Status](https://img.shields.io/badge/status-live-brightgreen?style=flat-square&labelColor=0d1117)
+![Version](https://img.shields.io/badge/version-2.0-blue?style=flat-square&labelColor=0d1117)
+![Platform](https://img.shields.io/badge/platform-GitHub%20Pages-cyan?style=flat-square&labelColor=0d1117)
+![Backend](https://img.shields.io/badge/backend-Firebase-orange?style=flat-square&labelColor=0d1117)
 
 **[→ Open Lunix](https://l9ep.github.io/Linux.obfuscator/)**
 
@@ -24,33 +25,52 @@
 
 ## What is Lunix?
 
-Lunix is a clean dark-themed script hub for Roblox. Browse and copy scripts, generate loadstring commands for Delta executor, and obfuscate your Lua code — all from one site.
+Lunix is a dark-themed Roblox script hub. Browse scripts, copy loadstring commands for Delta and other executors, obfuscate your Lua code, and manage your own profile — all from one clean site.
 
 ---
 
 ## Features
 
-- **Sign In / Register** — create an account and access the hub
-- **Script Hub** — browse hosted scripts, copy raw code or grab the loadstring
-- **Loadstring Generator** — one click to get the Delta executor command
-- **Lua Obfuscator** — three levels of obfuscation for your scripts
-- **Clean UI** — dark hacker theme, fully mobile friendly
+**Scripts**
+- Browse all hosted scripts
+- Search by name or filter by game
+- One click loadstring for Delta executor
+- Copy raw Lua code instantly
+
+**Profiles**
+- Create an account with username, email and password
+- Set a profile picture and bio
+- View your upload history and join date
+- Change username once per week
+- Usernames are unique and locked once taken
+
+**Obfuscator**
+- Three levels of Lua obfuscation running fully client side
+- History of your last 5 obfuscations
+- Copy, download or re-obfuscate output
+- Clear output instantly
+
+**Platform**
+- Announcements banner controlled by the hub owner
+- Real-time script updates powered by Firebase
+- All accounts and scripts stored in the cloud
+- Fully mobile friendly
 
 ---
 
 ## Obfuscator Levels
 
-| Level | Description |
+| Level | What it does |
 |-------|-------------|
-| ⚡ Light | Variable renaming — fast and lightweight |
-| 🔥 Medium | Full script encryption wrapped in a loader |
-| ☠ Max | Double encryption + garbage injection |
+| ⚡ Light | Variable renaming + string byte encoding |
+| 🔥 Medium | Full XOR encryption wrapped in a load() call |
+| ☠ Max | Double XOR + garbage injection + multi-layer wrapping |
 
 ---
 
 ## How to use a script
 
-Copy the loadstring from the Scripts tab and paste it into Delta executor:
+Copy the loadstring from the Scripts tab and paste into your executor:
 
 ```lua
 loadstring(game:HttpGet("RAW_SCRIPT_URL", true))()
@@ -58,21 +78,12 @@ loadstring(game:HttpGet("RAW_SCRIPT_URL", true))()
 
 ---
 
-## Status
+## Contact
 
-> Currently in testing phase. More scripts and features coming soon.
-
-| Feature | Status |
-|---------|--------|
-| Sign in / Register | ✅ Live |
-| Script browser | ✅ Live |
-| Loadstring generator | ✅ Live |
-| Lua Obfuscator | ✅ Live |
-| Cloud script storage | 🔜 Coming soon |
-| Public script sharing | 🔜 Coming soon |
+Discord: **y4zr**
 
 ---
 
 <div align="center">
-<sub>Lunix v1.0 — by xyth</sub>
+<sub>Lunix v2.0 — by yuki</sub>
 </div>
