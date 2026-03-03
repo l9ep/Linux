@@ -2,409 +2,275 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
 <title>Lunix — Script Hub</title>
 <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;500;600;700&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
 :root{
-  --bg:#04060a;
-  --bg2:#080d14;
-  --bg3:#0d1520;
-  --panel:#090f18;
-  --border:#152030;
-  --border2:#0f1e2e;
-  --accent:#00d4ff;
-  --accent2:#0090cc;
-  --accent3:#00ff88;
-  --red:#ff3355;
-  --yellow:#ffd700;
-  --orange:#ff8800;
-  --text:#c8dff0;
-  --text2:#4a6a88;
-  --text3:#1e3550;
-  --glow:0 0 20px rgba(0,212,255,0.25);
+  --bg:#04060a;--bg2:#080d14;--bg3:#0c1520;--panel:#090e17;
+  --border:#111e2e;--border2:#0c1a28;
+  --accent:#00d4ff;--accent2:#0090cc;--accent3:#00ff88;
+  --red:#ff3355;--yellow:#ffd700;--orange:#ff8c00;
+  --text:#c0d8ef;--text2:#3d6080;--text3:#1a3048;
 }
-html,body{height:100%;}
-body{
-  background:var(--bg);
-  color:var(--text);
-  font-family:'Rajdhani',sans-serif;
-  font-size:15px;
-  overflow-x:hidden;
-}
-body::before{
-  content:'';position:fixed;inset:0;
-  background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.025) 2px,rgba(0,0,0,0.025) 4px);
-  pointer-events:none;z-index:9998;
-}
-body::after{
-  content:'';position:fixed;inset:0;
-  background-image:linear-gradient(rgba(0,212,255,0.025) 1px,transparent 1px),linear-gradient(90deg,rgba(0,212,255,0.025) 1px,transparent 1px);
-  background-size:44px 44px;
-  pointer-events:none;z-index:0;
-}
+html,body{height:100%;overflow-x:hidden;}
+body{background:var(--bg);color:var(--text);font-family:'Rajdhani',sans-serif;font-size:15px;}
+body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.02) 2px,rgba(0,0,0,0.02) 4px);pointer-events:none;z-index:9997;}
+body::after{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(0,212,255,0.02) 1px,transparent 1px),linear-gradient(90deg,rgba(0,212,255,0.02) 1px,transparent 1px);background-size:44px 44px;pointer-events:none;z-index:0;}
 
-/* ── HEADER ── */
-header{
-  position:sticky;top:0;z-index:200;
-  background:rgba(4,6,10,0.97);
-  border-bottom:1px solid var(--border);
-  backdrop-filter:blur(16px);
-  padding:0 20px;
-  display:flex;align-items:center;justify-content:space-between;
-  height:54px;
-  pointer-events:all;
-}
-.logo{
-  font-family:'Orbitron',monospace;
-  font-size:18px;font-weight:900;
-  color:var(--accent);
-  letter-spacing:5px;
-  display:flex;align-items:center;gap:10px;
-  text-shadow:0 0 15px rgba(0,212,255,0.4);
-  user-select:none;
-}
-.logo-dot{width:7px;height:7px;background:var(--accent3);border-radius:50%;box-shadow:0 0 8px var(--accent3);animation:blink 2s infinite;}
-@keyframes blink{0%,100%{opacity:1;}50%{opacity:0.3;}}
+/* ── LOADING ── */
+#loadScreen{position:fixed;inset:0;background:var(--bg);z-index:1000;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;}
+.load-logo{font-family:'Orbitron',monospace;font-size:32px;font-weight:900;color:var(--accent);letter-spacing:8px;text-shadow:0 0 30px rgba(0,212,255,0.5);}
+.load-bar{width:200px;height:2px;background:var(--border);border-radius:1px;overflow:hidden;}
+.load-fill{height:100%;background:linear-gradient(90deg,var(--accent2),var(--accent));border-radius:1px;animation:loadAnim 1.5s ease-in-out infinite;}
+@keyframes loadAnim{0%{width:0%;margin-left:0;}50%{width:60%;margin-left:20%;}100%{width:0%;margin-left:100%;};}
+.load-sub{font-size:10px;letter-spacing:4px;color:var(--text2);text-transform:uppercase;}
 
-.header-right{display:flex;align-items:center;gap:10px;}
-.user-pill{
-  display:flex;align-items:center;gap:8px;
-  padding:5px 12px;
-  background:rgba(0,212,255,0.06);
-  border:1px solid var(--border);
-  border-radius:20px;
-  font-size:12px;font-weight:600;
-  color:var(--text2);
-  cursor:pointer;
-  transition:all 0.2s;
-}
-.user-pill:hover{border-color:var(--accent2);color:var(--accent);}
-.user-dot{width:6px;height:6px;background:var(--accent3);border-radius:50%;box-shadow:0 0 6px var(--accent3);}
-
-/* ── NAV ── */
-.nav{display:flex;gap:2px;pointer-events:all;}
-.nav-btn{
-  background:none;border:none;
-  color:var(--text2);
-  font-family:'Rajdhani',sans-serif;
-  font-size:12px;font-weight:700;
-  letter-spacing:2px;
-  padding:8px 14px;
-  border-radius:4px;
-  cursor:pointer;
-  transition:all 0.15s;
-  text-transform:uppercase;
-  position:relative;
-  z-index:201;
-  pointer-events:all;
-  -webkit-tap-highlight-color:transparent;
-}
-.nav-btn:hover{color:var(--accent);background:rgba(0,212,255,0.07);}
-.nav-btn.active{color:var(--accent);background:rgba(0,212,255,0.1);border-bottom:2px solid var(--accent);}
-
-/* ── MAIN ── */
-main{
-  position:relative;z-index:1;
-  max-width:1080px;margin:0 auto;
-  padding:24px 16px;
-}
-.tab{display:none;}
-.tab.active{display:block;animation:fadeUp 0.25s ease;}
-@keyframes fadeUp{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
-
-/* ── STATS ── */
-.stats-bar{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:22px;}
-.stat-card{
-  background:var(--panel);border:1px solid var(--border2);border-radius:8px;padding:14px;
-  position:relative;overflow:hidden;
-}
-.stat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent),transparent);opacity:0.4;}
-.stat-val{font-family:'Orbitron',monospace;font-size:22px;font-weight:700;color:var(--accent);text-shadow:0 0 12px rgba(0,212,255,0.4);line-height:1;}
-.stat-label{font-size:10px;letter-spacing:2px;color:var(--text2);text-transform:uppercase;margin-top:4px;}
-
-/* ── PANEL ── */
-.panel{background:var(--panel);border:1px solid var(--border2);border-radius:10px;overflow:hidden;margin-bottom:18px;}
-.panel-head{
-  display:flex;align-items:center;justify-content:space-between;
-  padding:12px 18px;border-bottom:1px solid var(--border2);
-  background:rgba(0,212,255,0.02);
-}
-.panel-title{
-  font-family:'Orbitron',monospace;font-size:11px;letter-spacing:3px;
-  color:var(--accent);text-transform:uppercase;
-  display:flex;align-items:center;gap:8px;
-}
-.panel-title::before{content:'▶';font-size:7px;color:var(--accent3);}
-.panel-body{padding:18px;}
-
-/* ── FORMS ── */
-.field{margin-bottom:14px;}
-.field:last-child{margin-bottom:0;}
-label,.field-label{
-  display:block;font-size:10px;letter-spacing:2px;
-  color:var(--text2);text-transform:uppercase;margin-bottom:5px;
-}
-input,textarea,select{
-  width:100%;
-  background:var(--bg2);border:1px solid var(--border);border-radius:6px;
-  color:var(--text);font-family:'Share Tech Mono',monospace;font-size:12px;
-  padding:9px 12px;outline:none;transition:border-color 0.2s,box-shadow 0.2s;
-  resize:vertical;-webkit-appearance:none;
-}
-input:focus,textarea:focus,select:focus{border-color:var(--accent2);box-shadow:0 0 0 2px rgba(0,212,255,0.08);}
-input::placeholder,textarea::placeholder{color:var(--text3);}
-
-/* ── BUTTONS ── */
-.btn{
-  display:inline-flex;align-items:center;justify-content:center;gap:7px;
-  padding:9px 18px;border:none;border-radius:6px;
-  font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:700;
-  letter-spacing:2px;text-transform:uppercase;cursor:pointer;
-  transition:all 0.15s;-webkit-tap-highlight-color:transparent;
-  pointer-events:all;user-select:none;
-}
-.btn-primary{background:linear-gradient(135deg,#005f99,#00c4ef);color:#000;box-shadow:0 0 16px rgba(0,196,239,0.25);}
-.btn-primary:hover{box-shadow:0 0 24px rgba(0,196,239,0.45);transform:translateY(-1px);}
-.btn-primary:active{transform:translateY(0);}
-.btn-ghost{background:rgba(255,255,255,0.04);border:1px solid var(--border);color:var(--text2);}
-.btn-ghost:hover{border-color:var(--accent2);color:var(--accent);}
-.btn-danger{background:rgba(255,51,85,0.08);border:1px solid rgba(255,51,85,0.25);color:var(--red);}
-.btn-danger:hover{background:rgba(255,51,85,0.16);}
-.btn-green{background:rgba(0,255,136,0.08);border:1px solid rgba(0,255,136,0.25);color:var(--accent3);}
-.btn-green:hover{background:rgba(0,255,136,0.16);}
-.btn-sm{padding:5px 12px;font-size:10px;}
-.btn-full{width:100%;}
-.btn-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px;}
-
-/* ── SCRIPT CARDS ── */
-.script-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;}
-.script-card{
-  background:var(--bg2);border:1px solid var(--border2);border-radius:8px;padding:14px;
-  transition:border-color 0.2s,transform 0.15s;position:relative;overflow:hidden;
-}
-.script-card::after{content:'';position:absolute;top:0;left:0;width:2px;height:100%;background:var(--accent);opacity:0.5;}
-.script-card:hover{border-color:var(--border);transform:translateY(-2px);}
-.sc-name{font-family:'Orbitron',monospace;font-size:12px;font-weight:700;color:var(--accent);margin-bottom:4px;padding-left:10px;}
-.sc-meta{font-size:11px;color:var(--text2);margin-bottom:10px;padding-left:10px;}
-.sc-actions{display:flex;gap:6px;flex-wrap:wrap;padding-left:10px;}
-
-/* ── BADGE ── */
-.badge{display:inline-block;padding:2px 7px;border-radius:3px;font-size:9px;letter-spacing:1px;font-weight:700;text-transform:uppercase;}
-.badge-blue{background:rgba(0,212,255,0.12);color:var(--accent);}
-.badge-green{background:rgba(0,255,136,0.12);color:var(--accent3);}
-.badge-red{background:rgba(255,51,85,0.12);color:var(--red);}
-.badge-yellow{background:rgba(255,215,0,0.12);color:var(--yellow);}
-.owner-badge{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;background:rgba(255,215,0,0.08);border:1px solid rgba(255,215,0,0.25);border-radius:4px;font-size:10px;font-weight:700;letter-spacing:2px;color:var(--yellow);text-transform:uppercase;}
-
-/* ── CODE BOX ── */
-.code-box{
-  background:var(--bg);border:1px solid rgba(0,255,136,0.15);border-left:2px solid var(--accent3);
-  border-radius:6px;padding:12px 14px;
-  font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--accent3);
-  word-break:break-all;margin-top:10px;line-height:1.6;
-}
-
-/* ── OBFUSCATOR ── */
-.obf-levels{display:flex;gap:8px;margin-bottom:14px;}
-.obf-level{
-  flex:1;padding:9px;text-align:center;
-  background:var(--bg2);border:1px solid var(--border);border-radius:6px;
-  cursor:pointer;font-size:11px;font-weight:700;letter-spacing:1px;
-  color:var(--text2);transition:all 0.15s;text-transform:uppercase;
-  -webkit-tap-highlight-color:transparent;
-}
-.obf-level:hover{border-color:var(--border2);color:var(--text);}
-.obf-level.active{border-color:var(--accent);color:var(--accent);background:rgba(0,212,255,0.07);box-shadow:0 0 8px rgba(0,212,255,0.15);}
-.obf-level[data-l="medium"].active{border-color:var(--yellow);color:var(--yellow);background:rgba(255,215,0,0.07);}
-.obf-level[data-l="max"].active{border-color:var(--red);color:var(--red);background:rgba(255,51,85,0.07);}
-
-/* ── AUTH PAGE ── */
-#authPage{
-  position:fixed;inset:0;z-index:500;
-  background:var(--bg);
-  display:flex;align-items:center;justify-content:center;
-  padding:20px;
-}
-#authPage::before{
-  content:'';position:absolute;inset:0;
-  background-image:linear-gradient(rgba(0,212,255,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,212,255,0.03) 1px,transparent 1px);
-  background-size:44px 44px;
-}
-.auth-box{
-  position:relative;z-index:1;
-  background:var(--panel);border:1px solid var(--border);border-radius:14px;
-  padding:36px 32px;width:100%;max-width:380px;
-  box-shadow:0 0 60px rgba(0,0,0,0.6),0 0 30px rgba(0,212,255,0.05);
-}
-.auth-logo{
-  font-family:'Orbitron',monospace;font-size:28px;font-weight:900;
-  color:var(--accent);letter-spacing:6px;text-align:center;
-  text-shadow:0 0 20px rgba(0,212,255,0.5);margin-bottom:6px;
-}
-.auth-sub{text-align:center;font-size:11px;letter-spacing:3px;color:var(--text2);margin-bottom:28px;text-transform:uppercase;}
-.auth-tabs{display:flex;gap:0;margin-bottom:22px;border:1px solid var(--border);border-radius:6px;overflow:hidden;}
-.auth-tab{
-  flex:1;padding:8px;text-align:center;
-  font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;
-  color:var(--text2);cursor:pointer;transition:all 0.2s;
-  background:none;border:none;font-family:'Rajdhani',sans-serif;
-  -webkit-tap-highlight-color:transparent;
-}
+/* ── AUTH ── */
+#authPage{position:fixed;inset:0;z-index:500;background:var(--bg);display:none;align-items:center;justify-content:center;padding:20px;}
+#authPage::after{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(0,212,255,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,212,255,0.03) 1px,transparent 1px);background-size:44px 44px;pointer-events:none;}
+.auth-wrap{position:relative;z-index:1;width:100%;max-width:400px;}
+.auth-box{background:var(--panel);border:1px solid var(--border);border-radius:16px;padding:40px 32px;box-shadow:0 0 80px rgba(0,0,0,0.7),0 0 40px rgba(0,212,255,0.04);}
+.auth-logo{font-family:'Orbitron',monospace;font-size:30px;font-weight:900;color:var(--accent);letter-spacing:6px;text-align:center;text-shadow:0 0 25px rgba(0,212,255,0.5);margin-bottom:4px;}
+.auth-sub{text-align:center;font-size:10px;letter-spacing:4px;color:var(--text2);margin-bottom:30px;text-transform:uppercase;}
+.auth-tabs{display:flex;border:1px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:24px;}
+.auth-tab{flex:1;padding:10px;text-align:center;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text2);cursor:pointer;background:none;border:none;font-family:'Rajdhani',sans-serif;transition:all 0.2s;-webkit-tap-highlight-color:transparent;}
 .auth-tab.active{background:rgba(0,212,255,0.1);color:var(--accent);}
 .auth-form{display:none;}
 .auth-form.active{display:block;}
-.auth-err{color:var(--red);font-size:11px;text-align:center;margin-top:10px;display:none;letter-spacing:1px;}
-.auth-switch{text-align:center;margin-top:14px;font-size:11px;color:var(--text2);}
-.auth-switch span{color:var(--accent);cursor:pointer;text-decoration:underline;}
+.auth-err{color:var(--red);font-size:11px;text-align:center;margin-top:12px;display:none;letter-spacing:1px;}
+.auth-ok{color:var(--accent3);font-size:11px;text-align:center;margin-top:12px;display:none;letter-spacing:1px;}
+
+/* ── HEADER ── */
+header{position:sticky;top:0;z-index:200;background:rgba(4,6,10,0.97);border-bottom:1px solid var(--border);backdrop-filter:blur(20px);height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;}
+.logo{font-family:'Orbitron',monospace;font-size:17px;font-weight:900;color:var(--accent);letter-spacing:5px;display:flex;align-items:center;gap:10px;text-shadow:0 0 12px rgba(0,212,255,0.35);user-select:none;}
+.logo-dot{width:7px;height:7px;background:var(--accent3);border-radius:50%;box-shadow:0 0 8px var(--accent3);animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:0.4;transform:scale(0.8);}}
+.nav{display:flex;gap:2px;}
+.nav-btn{background:none;border:none;color:var(--text2);font-family:'Rajdhani',sans-serif;font-size:11px;font-weight:700;letter-spacing:2px;padding:8px 12px;border-radius:4px;cursor:pointer;transition:all 0.15s;text-transform:uppercase;-webkit-tap-highlight-color:transparent;}
+.nav-btn:hover,.nav-btn.active{color:var(--accent);background:rgba(0,212,255,0.08);}
+.nav-btn.active{border-bottom:2px solid var(--accent);}
+.hdr-right{display:flex;align-items:center;gap:8px;}
+.user-chip{display:flex;align-items:center;gap:7px;padding:5px 12px;background:rgba(0,212,255,0.05);border:1px solid var(--border);border-radius:20px;font-size:11px;font-weight:600;color:var(--text2);cursor:pointer;transition:all 0.2s;-webkit-tap-highlight-color:transparent;}
+.user-chip:hover{border-color:var(--accent2);color:var(--accent);}
+.online-dot{width:6px;height:6px;background:var(--accent3);border-radius:50%;box-shadow:0 0 6px var(--accent3);}
+
+/* ── MAIN ── */
+#app{display:none;}
+main{position:relative;z-index:1;max-width:1100px;margin:0 auto;padding:24px 16px;}
+.tab{display:none;}
+.tab.active{display:block;animation:fadeUp 0.2s ease;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+
+/* ── STATS ── */
+.stats-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:20px;}
+.stat{background:var(--panel);border:1px solid var(--border2);border-radius:8px;padding:14px;position:relative;overflow:hidden;}
+.stat::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent),transparent);opacity:0.35;}
+.stat-n{font-family:'Orbitron',monospace;font-size:22px;font-weight:700;color:var(--accent);text-shadow:0 0 10px rgba(0,212,255,0.35);line-height:1;}
+.stat-l{font-size:10px;letter-spacing:2px;color:var(--text2);text-transform:uppercase;margin-top:4px;}
+
+/* ── PANEL ── */
+.panel{background:var(--panel);border:1px solid var(--border2);border-radius:10px;overflow:hidden;margin-bottom:16px;}
+.ph{display:flex;align-items:center;justify-content:space-between;padding:12px 18px;border-bottom:1px solid var(--border2);background:rgba(0,212,255,0.02);}
+.pt{font-family:'Orbitron',monospace;font-size:10px;letter-spacing:3px;color:var(--accent);text-transform:uppercase;display:flex;align-items:center;gap:8px;}
+.pt::before{content:'▶';font-size:7px;color:var(--accent3);}
+.pb{padding:18px;}
+
+/* ── FORMS ── */
+.field{margin-bottom:12px;}
+.field:last-child{margin-bottom:0;}
+label{display:block;font-size:10px;letter-spacing:2px;color:var(--text2);text-transform:uppercase;margin-bottom:5px;}
+input,textarea,select{width:100%;background:var(--bg2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:'Share Tech Mono',monospace;font-size:12px;padding:9px 12px;outline:none;transition:border-color 0.2s,box-shadow 0.2s;resize:vertical;-webkit-appearance:none;}
+input:focus,textarea:focus{border-color:var(--accent2);box-shadow:0 0 0 2px rgba(0,212,255,0.07);}
+input::placeholder,textarea::placeholder{color:var(--text3);}
+
+/* ── BUTTONS ── */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:9px 18px;border:none;border-radius:6px;font-family:'Rajdhani',sans-serif;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all 0.15s;-webkit-tap-highlight-color:transparent;user-select:none;}
+.btn-primary{background:linear-gradient(135deg,#005580,#00bde0);color:#000;box-shadow:0 0 14px rgba(0,189,224,0.2);}
+.btn-primary:hover{box-shadow:0 0 22px rgba(0,189,224,0.4);transform:translateY(-1px);}
+.btn-ghost{background:rgba(255,255,255,0.03);border:1px solid var(--border);color:var(--text2);}
+.btn-ghost:hover{border-color:var(--accent2);color:var(--accent);}
+.btn-danger{background:rgba(255,51,85,0.07);border:1px solid rgba(255,51,85,0.2);color:var(--red);}
+.btn-danger:hover{background:rgba(255,51,85,0.14);}
+.btn-green{background:rgba(0,255,136,0.07);border:1px solid rgba(0,255,136,0.2);color:var(--accent3);}
+.btn-green:hover{background:rgba(0,255,136,0.14);}
+.btn-yellow{background:rgba(255,215,0,0.07);border:1px solid rgba(255,215,0,0.2);color:var(--yellow);}
+.btn-sm{padding:5px 11px;font-size:10px;}
+.btn-full{width:100%;}
+.btn-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;}
+
+/* ── SCRIPT CARDS ── */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;}
+.scard{background:var(--bg2);border:1px solid var(--border2);border-radius:8px;padding:14px 14px 14px 18px;transition:border-color 0.2s,transform 0.15s;position:relative;overflow:hidden;}
+.scard::before{content:'';position:absolute;top:0;left:0;width:2px;height:100%;background:linear-gradient(180deg,var(--accent),var(--accent2));opacity:0.6;}
+.scard:hover{border-color:var(--border);transform:translateY(-2px);}
+.scard-name{font-family:'Orbitron',monospace;font-size:11px;font-weight:700;color:var(--accent);margin-bottom:4px;}
+.scard-meta{font-size:11px;color:var(--text2);margin-bottom:10px;line-height:1.5;}
+.scard-acts{display:flex;gap:6px;flex-wrap:wrap;}
+
+/* ── BADGE ── */
+.badge{display:inline-block;padding:2px 7px;border-radius:3px;font-size:9px;letter-spacing:1px;font-weight:700;text-transform:uppercase;}
+.b-blue{background:rgba(0,212,255,0.1);color:var(--accent);}
+.b-green{background:rgba(0,255,136,0.1);color:var(--accent3);}
+.b-yellow{background:rgba(255,215,0,0.1);color:var(--yellow);}
+.b-red{background:rgba(255,51,85,0.1);color:var(--red);}
+.owner-badge{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;background:rgba(255,215,0,0.07);border:1px solid rgba(255,215,0,0.2);border-radius:4px;font-size:10px;font-weight:700;letter-spacing:2px;color:var(--yellow);text-transform:uppercase;}
+
+/* ── CODE BOX ── */
+.code-box{background:var(--bg);border:1px solid rgba(0,255,136,0.12);border-left:2px solid var(--accent3);border-radius:6px;padding:12px 14px;font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--accent3);word-break:break-all;line-height:1.6;}
+
+/* ── OBF ── */
+.obf-lvls{display:flex;gap:8px;margin-bottom:12px;}
+.obf-lvl{flex:1;padding:9px;text-align:center;background:var(--bg2);border:1px solid var(--border);border-radius:6px;cursor:pointer;font-size:11px;font-weight:700;letter-spacing:1px;color:var(--text2);transition:all 0.15s;text-transform:uppercase;-webkit-tap-highlight-color:transparent;}
+.obf-lvl.on{border-color:var(--accent);color:var(--accent);background:rgba(0,212,255,0.07);}
+.obf-lvl[data-l="medium"].on{border-color:var(--yellow);color:var(--yellow);background:rgba(255,215,0,0.07);}
+.obf-lvl[data-l="max"].on{border-color:var(--red);color:var(--red);background:rgba(255,51,85,0.07);}
+
+/* ── PROFILE ── */
+.profile-header{display:flex;align-items:center;gap:16px;margin-bottom:20px;}
+.avatar{width:72px;height:72px;border-radius:50%;background:var(--bg2);border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:28px;overflow:hidden;flex-shrink:0;}
+.avatar img{width:100%;height:100%;object-fit:cover;}
+.profile-info{flex:1;}
+.profile-name{font-family:'Orbitron',monospace;font-size:16px;font-weight:700;color:var(--accent);margin-bottom:3px;}
+.profile-bio{font-size:12px;color:var(--text2);line-height:1.5;}
+.profile-stats{display:flex;gap:16px;margin-top:8px;}
+.pstat{text-align:center;}
+.pstat-n{font-family:'Orbitron',monospace;font-size:16px;color:var(--accent);}
+.pstat-l{font-size:10px;color:var(--text2);letter-spacing:1px;text-transform:uppercase;}
 
 /* ── POPUP ── */
-.popup-overlay{
-  position:fixed;inset:0;background:rgba(0,0,0,0.8);backdrop-filter:blur(6px);
-  z-index:300;display:flex;align-items:center;justify-content:center;padding:16px;
-}
-.popup-box{
-  background:var(--bg3);border:1px solid var(--border);border-radius:12px;
-  padding:24px;width:100%;max-width:520px;position:relative;
-}
+.popup-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.85);backdrop-filter:blur(8px);z-index:400;display:flex;align-items:center;justify-content:center;padding:16px;}
+.popup-box{background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:24px;width:100%;max-width:520px;}
 .popup-title{font-family:'Orbitron',monospace;font-size:11px;letter-spacing:3px;color:var(--accent);margin-bottom:16px;}
 
-/* ── DIVIDER ── */
-.divider{height:1px;background:linear-gradient(90deg,transparent,var(--border),transparent);margin:16px 0;}
-
-/* ── EMPTY STATE ── */
-.empty{text-align:center;padding:40px 20px;color:var(--text3);}
-.empty-icon{font-size:32px;margin-bottom:10px;opacity:0.4;}
-.empty p{font-size:11px;letter-spacing:1px;}
+/* ── SEARCH ── */
+.search-row{display:flex;gap:8px;margin-bottom:16px;}
+.search-row input{flex:1;}
+.search-row select{width:auto;flex-shrink:0;}
 
 /* ── TOAST ── */
-#toast{
-  position:fixed;bottom:20px;right:20px;z-index:9999;
-  background:var(--bg3);border:1px solid var(--accent2);border-radius:8px;
-  padding:10px 18px;font-size:12px;font-weight:600;letter-spacing:1px;
-  color:var(--accent);box-shadow:var(--glow);
-  transform:translateY(60px);opacity:0;
-  transition:all 0.3s cubic-bezier(.34,1.56,.64,1);
-  pointer-events:none;max-width:280px;
-}
+#toast{position:fixed;bottom:20px;right:20px;z-index:9999;background:var(--bg3);border:1px solid var(--accent2);border-radius:8px;padding:10px 18px;font-size:12px;font-weight:600;letter-spacing:1px;color:var(--accent);transform:translateY(60px);opacity:0;transition:all 0.3s cubic-bezier(.34,1.56,.64,1);pointer-events:none;max-width:260px;}
 #toast.show{transform:translateY(0);opacity:1;}
 
-/* ── MOBILE ── */
-@media(max-width:580px){
-  header{padding:0 12px;}
-  .logo{font-size:15px;letter-spacing:3px;}
-  .nav-btn{padding:6px 10px;font-size:10px;letter-spacing:1px;}
-  main{padding:14px 10px;}
-  .stats-bar{grid-template-columns:1fr 1fr;}
-  .stat-val{font-size:18px;}
-  .script-grid{grid-template-columns:1fr;}
-  .obf-levels{flex-direction:column;}
-  .auth-box{padding:24px 18px;}
-  .auth-logo{font-size:22px;}
-}
+/* ── DIVIDER ── */
+.div{height:1px;background:linear-gradient(90deg,transparent,var(--border),transparent);margin:14px 0;}
 
-::-webkit-scrollbar{width:5px;}
+/* ── EMPTY ── */
+.empty{text-align:center;padding:40px 20px;color:var(--text3);}
+.empty-ico{font-size:30px;margin-bottom:10px;opacity:0.35;}
+.empty p{font-size:11px;letter-spacing:1px;}
+
+/* ── NOTIFICATION DOT ── */
+.notif-dot{width:7px;height:7px;background:var(--red);border-radius:50%;display:inline-block;margin-left:4px;box-shadow:0 0 6px var(--red);}
+
+/* ── ANNOUNCEMENTS ── */
+.announce-bar{background:linear-gradient(90deg,rgba(0,212,255,0.08),rgba(0,255,136,0.05));border:1px solid rgba(0,212,255,0.15);border-radius:8px;padding:12px 16px;margin-bottom:16px;display:flex;align-items:center;gap:12px;font-size:12px;}
+.announce-icon{font-size:16px;flex-shrink:0;}
+.announce-text{color:var(--text);flex:1;}
+.announce-text b{color:var(--accent);}
+
+@media(max-width:560px){
+  header{padding:0 12px;}
+  .logo{font-size:14px;letter-spacing:3px;}
+  .nav-btn{padding:6px 8px;font-size:9px;letter-spacing:1px;}
+  main{padding:12px 10px;}
+  .stats-row{grid-template-columns:1fr 1fr;}
+  .stat-n{font-size:18px;}
+  .grid{grid-template-columns:1fr;}
+  .obf-lvls{flex-direction:column;}
+  .auth-box{padding:28px 18px;}
+  .auth-logo{font-size:24px;}
+  .profile-header{flex-direction:column;text-align:center;}
+  .profile-stats{justify-content:center;}
+}
+::-webkit-scrollbar{width:4px;}
 ::-webkit-scrollbar-track{background:var(--bg);}
-::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px;}
 </style>
 </head>
 <body>
-
-<!-- TOAST -->
 <div id="toast"></div>
 
-<!-- ══════════ AUTH PAGE ══════════ -->
+<!-- LOADING -->
+<div id="loadScreen">
+  <div class="load-logo">LUNIX</div>
+  <div class="load-bar"><div class="load-fill"></div></div>
+  <div class="load-sub">Script Hub by yuki</div>
+</div>
+
+<!-- AUTH -->
 <div id="authPage">
-  <div class="auth-box">
-    <div class="auth-logo">LUNIX</div>
-    <div class="auth-sub">Script Hub by xyth</div>
-
-    <div class="auth-tabs">
-      <button class="auth-tab active" onclick="switchAuthTab('login',this)">Sign In</button>
-      <button class="auth-tab" onclick="switchAuthTab('register',this)">Register</button>
-    </div>
-
-    <!-- LOGIN -->
-    <div class="auth-form active" id="loginForm">
-      <div class="field">
-        <label>Username or Email</label>
-        <input type="text" id="loginUser" placeholder="username or email" autocomplete="username">
+  <div class="auth-wrap">
+    <div class="auth-box">
+      <div class="auth-logo">LUNIX</div>
+      <div class="auth-sub">Script Hub · by yuki · discord: y4zr</div>
+      <div class="auth-tabs">
+        <button class="auth-tab active" onclick="switchTab('login',this)">Sign In</button>
+        <button class="auth-tab" onclick="switchTab('register',this)">Register</button>
       </div>
-      <div class="field">
-        <label>Password</label>
-        <input type="password" id="loginPass" placeholder="••••••••" autocomplete="current-password">
+      <div class="auth-form active" id="loginForm">
+        <div class="field"><label>Email</label><input type="email" id="liEmail" placeholder="your@email.com"></div>
+        <div class="field"><label>Password</label><input type="password" id="liPass" placeholder="••••••••"></div>
+        <div class="btn-row" style="margin-top:16px;"><button class="btn btn-primary btn-full" onclick="doLogin()">SIGN IN</button></div>
+        <div class="auth-err" id="liErr"></div>
       </div>
-      <div class="btn-row" style="margin-top:18px;">
-        <button class="btn btn-primary btn-full" onclick="doLogin()">SIGN IN</button>
+      <div class="auth-form" id="registerForm">
+        <div class="field"><label>Username</label><input type="text" id="rgUser" placeholder="3-20 chars, letters/numbers/_"></div>
+        <div class="field"><label>Email</label><input type="email" id="rgEmail" placeholder="your@email.com"></div>
+        <div class="field"><label>Password</label><input type="password" id="rgPass" placeholder="min 6 characters"></div>
+        <div class="btn-row" style="margin-top:16px;"><button class="btn btn-primary btn-full" onclick="doRegister()">CREATE ACCOUNT</button></div>
+        <div class="auth-err" id="rgErr"></div>
+        <div class="auth-ok" id="rgOk">Account created! Signing in...</div>
       </div>
-      <div class="auth-err" id="loginErr">Invalid credentials</div>
-    </div>
-
-    <!-- REGISTER -->
-    <div class="auth-form" id="registerForm">
-      <div class="field">
-        <label>Username</label>
-        <input type="text" id="regUser" placeholder="choose a username" autocomplete="username">
-      </div>
-      <div class="field">
-        <label>Email</label>
-        <input type="email" id="regEmail" placeholder="your@email.com" autocomplete="email">
-      </div>
-      <div class="field">
-        <label>Password</label>
-        <input type="password" id="regPass" placeholder="min 6 characters" autocomplete="new-password">
-      </div>
-      <div class="btn-row" style="margin-top:18px;">
-        <button class="btn btn-primary btn-full" onclick="doRegister()">CREATE ACCOUNT</button>
-      </div>
-      <div class="auth-err" id="registerErr">Error</div>
     </div>
   </div>
 </div>
 
-<!-- ══════════ APP ══════════ -->
-<div id="app" style="display:none;">
-
+<!-- APP -->
+<div id="app">
 <header>
   <div class="logo"><div class="logo-dot"></div>LUNIX</div>
   <nav class="nav">
-    <button class="nav-btn active" id="nav-dashboard" onclick="showTab('dashboard')">Dashboard</button>
-    <button class="nav-btn" id="nav-scripts" onclick="showTab('scripts')">Scripts</button>
-    <button class="nav-btn" id="nav-obfuscator" onclick="showTab('obfuscator')">Obfuscator</button>
-    <button class="nav-btn" id="nav-owner" onclick="showTab('owner')">Owner</button>
+    <button class="nav-btn active" id="nb-home" onclick="go('home')">Home</button>
+    <button class="nav-btn" id="nb-scripts" onclick="go('scripts')">Scripts</button>
+    <button class="nav-btn" id="nb-obf" onclick="go('obf')">Obfuscator</button>
+    <button class="nav-btn" id="nb-profile" onclick="go('profile')">Profile</button>
+    <button class="nav-btn" id="nb-owner" style="display:none;" onclick="go('owner')">Owner</button>
   </nav>
-  <div class="header-right">
-    <div class="user-pill" onclick="doLogout()">
-      <div class="user-dot"></div>
-      <span id="headerUsername">user</span>
-      <span style="opacity:0.4;">✕</span>
+  <div class="hdr-right">
+    <div class="user-chip" onclick="doLogout()">
+      <div class="online-dot"></div>
+      <span id="hdrName">—</span>
+      <span style="opacity:0.3;font-size:9px;">✕</span>
     </div>
   </div>
 </header>
 
 <main>
 
-<!-- DASHBOARD -->
-<div class="tab active" id="tab-dashboard">
-  <div class="stats-bar">
-    <div class="stat-card"><div class="stat-val" id="stat-scripts">0</div><div class="stat-label">Scripts</div></div>
-    <div class="stat-card"><div class="stat-val" id="stat-users">1</div><div class="stat-label">Users</div></div>
-    <div class="stat-card"><div class="stat-val" style="color:var(--accent3);font-size:14px;">ONLINE</div><div class="stat-label">Status</div></div>
-    <div class="stat-card"><div class="stat-val" style="font-size:14px;">v1.0</div><div class="stat-label">Version</div></div>
+<!-- HOME -->
+<div class="tab active" id="tab-home">
+  <div id="announceBar" style="display:none;" class="announce-bar">
+    <div class="announce-icon">📢</div>
+    <div class="announce-text" id="announceText"></div>
   </div>
-
-  <div class="panel">
-    <div class="panel-head"><div class="panel-title">Recent Scripts</div></div>
-    <div class="panel-body"><div id="dashScripts" class="script-grid"><div class="empty"><div class="empty-icon">⬡</div><p>No scripts yet</p></div></div></div>
+  <div class="stats-row">
+    <div class="stat"><div class="stat-n" id="sScripts">0</div><div class="stat-l">Scripts</div></div>
+    <div class="stat"><div class="stat-n" id="sUsers">0</div><div class="stat-l">Users</div></div>
+    <div class="stat"><div class="stat-n" style="color:var(--accent3);font-size:13px;">ONLINE</div><div class="stat-l">Status</div></div>
+    <div class="stat"><div class="stat-n" style="font-size:13px;">v2.0</div><div class="stat-l">Version</div></div>
   </div>
-
   <div class="panel">
-    <div class="panel-head"><div class="panel-title">About Lunix</div></div>
-    <div class="panel-body" style="font-size:13px;color:var(--text2);line-height:1.8;">
-      <span class="badge badge-blue">LUNIX HUB</span> &nbsp; Script hosting platform built by <b style="color:var(--accent)">xyth</b>.<br>
-      Host Lua scripts, get instant loadstring commands for Delta executor, obfuscate your code and share with your crew.<br><br>
-      <span class="badge badge-yellow">TESTING PHASE</span> &nbsp; Currently using local storage. Firebase backend coming soon.
+    <div class="ph"><div class="pt">Trending Scripts</div><span class="badge b-yellow">🔥 HOT</span></div>
+    <div class="pb"><div id="homeScripts" class="grid"><div class="empty"><div class="empty-ico">⬡</div><p>No scripts yet</p></div></div></div>
+  </div>
+  <div class="panel">
+    <div class="ph"><div class="pt">About Lunix</div></div>
+    <div class="pb" style="font-size:13px;color:var(--text2);line-height:1.9;">
+      <span class="badge b-blue">LUNIX</span> &nbsp; Script hub by <b style="color:var(--accent)">yuki</b>.<br>
+      Host Lua scripts, generate Delta loadstrings, obfuscate your code and share with the community.<br><br>
+      <span style="font-size:11px;letter-spacing:1px;">Discord: <b style="color:var(--accent2)">y4zr</b></span>
     </div>
   </div>
 </div>
@@ -412,50 +278,97 @@ input::placeholder,textarea::placeholder{color:var(--text3);}
 <!-- SCRIPTS -->
 <div class="tab" id="tab-scripts">
   <div class="panel">
-    <div class="panel-head">
-      <div class="panel-title">All Scripts</div>
+    <div class="ph">
+      <div class="pt">All Scripts</div>
       <span id="ownerBadge" style="display:none;" class="owner-badge">★ OWNER</span>
     </div>
-    <div class="panel-body">
-      <div id="scriptList" class="script-grid"><div class="empty"><div class="empty-icon">⬡</div><p>No scripts hosted yet</p></div></div>
+    <div class="pb">
+      <div class="search-row">
+        <input type="text" id="searchInput" placeholder="Search scripts..." oninput="filterScripts()">
+        <select id="filterGame" onchange="filterScripts()">
+          <option value="">All Games</option>
+          <option>Da Hood</option>
+          <option>Prison Life</option>
+          <option>Blox Fruits</option>
+          <option>Arsenal</option>
+          <option>Universal</option>
+        </select>
+      </div>
+      <div id="scriptList" class="grid"><div class="empty"><div class="empty-ico">⬡</div><p>Loading scripts...</p></div></div>
     </div>
   </div>
 </div>
 
 <!-- OBFUSCATOR -->
-<div class="tab" id="tab-obfuscator">
+<div class="tab" id="tab-obf">
   <div class="panel">
-    <div class="panel-head">
-      <div class="panel-title">Lua Obfuscator</div>
-      <span class="badge badge-blue">CLIENT SIDE</span>
-    </div>
-    <div class="panel-body">
-      <div class="obf-levels">
-        <div class="obf-level active" data-l="light" onclick="setObfLevel('light',this)">⚡ Light</div>
-        <div class="obf-level" data-l="medium" onclick="setObfLevel('medium',this)">🔥 Medium</div>
-        <div class="obf-level" data-l="max" onclick="setObfLevel('max',this)">☠ Max</div>
+    <div class="ph"><div class="pt">Lua Obfuscator</div><span class="badge b-blue">CLIENT SIDE</span></div>
+    <div class="pb">
+      <div class="obf-lvls">
+        <div class="obf-lvl on" data-l="light" onclick="setLvl('light',this)">⚡ Light</div>
+        <div class="obf-lvl" data-l="medium" onclick="setLvl('medium',this)">🔥 Medium</div>
+        <div class="obf-lvl" data-l="max" onclick="setLvl('max',this)">☠ Max</div>
       </div>
-      <div id="obfDesc" style="font-size:11px;color:var(--text2);margin-bottom:14px;letter-spacing:1px;">Light — Variable renaming + string byte encoding</div>
-      <div class="field">
-        <label>Input Script</label>
-        <textarea id="obfIn" rows="9" placeholder="-- paste your lua script here..."></textarea>
-      </div>
+      <div id="obfDesc" style="font-size:11px;color:var(--text2);margin-bottom:12px;letter-spacing:1px;">Light — Variable renaming + string encoding</div>
+      <div class="field"><label>Input Script</label><textarea id="obfIn" rows="8" placeholder="-- paste lua script here..."></textarea></div>
       <div class="btn-row">
         <button class="btn btn-primary" onclick="runObf()">⬡ OBFUSCATE</button>
-        <button class="btn btn-ghost" onclick="document.getElementById('obfIn').value=''">CLEAR</button>
-        <button class="btn btn-ghost btn-sm" onclick="swapObf()">↺ RE-OBF</button>
+        <button class="btn btn-ghost" onclick="obfIn.value=''">CLEAR INPUT</button>
       </div>
       <div class="field" style="margin-top:14px;">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:5px;">
           <label style="margin:0;">Output</label>
-          <span id="obfStats" style="font-size:10px;color:var(--text2);letter-spacing:1px;"></span>
+          <span id="obfStats" style="font-size:10px;color:var(--text2);"></span>
         </div>
-        <textarea id="obfOut" rows="9" placeholder="-- obfuscated output..." readonly></textarea>
+        <textarea id="obfOut" rows="8" placeholder="-- obfuscated output..." readonly></textarea>
       </div>
       <div class="btn-row">
         <button class="btn btn-ghost btn-sm" onclick="copyObf()">COPY</button>
-        <button class="btn btn-ghost btn-sm" onclick="dlObf()">DOWNLOAD .lua</button>
+        <button class="btn btn-ghost btn-sm" onclick="dlObf()">DOWNLOAD</button>
+        <button class="btn btn-danger btn-sm" onclick="obfOut.value='';obfStats.textContent=''">CLEAR OUTPUT</button>
+        <button class="btn btn-ghost btn-sm" onclick="swapObf()">↺ RE-OBF</button>
       </div>
+      <!-- History -->
+      <div id="obfHistPanel" style="margin-top:16px;display:none;">
+        <div class="div"></div>
+        <div style="font-size:10px;letter-spacing:2px;color:var(--text2);margin-bottom:8px;text-transform:uppercase;">Recent History</div>
+        <div id="obfHistList"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PROFILE -->
+<div class="tab" id="tab-profile">
+  <div class="panel">
+    <div class="ph"><div class="pt">My Profile</div><button class="btn btn-ghost btn-sm" onclick="openEditProfile()">EDIT</button></div>
+    <div class="pb">
+      <div class="profile-header">
+        <div class="avatar" id="profileAvatar">👤</div>
+        <div class="profile-info">
+          <div class="profile-name" id="profileName">—</div>
+          <div class="profile-bio" id="profileBio" style="color:var(--text2);font-size:12px;">No bio yet</div>
+          <div class="profile-stats">
+            <div class="pstat"><div class="pstat-n" id="profileUploads">0</div><div class="pstat-l">Uploads</div></div>
+            <div class="pstat"><div class="pstat-n" id="profileJoined">—</div><div class="pstat-l">Joined</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="panel">
+    <div class="ph"><div class="pt">My Scripts</div></div>
+    <div class="pb"><div id="myScripts" class="grid"><div class="empty"><div class="empty-ico">⬡</div><p>No scripts yet</p></div></div></div>
+  </div>
+  <div class="panel">
+    <div class="ph"><div class="pt">Account Settings</div></div>
+    <div class="pb">
+      <div style="font-size:12px;color:var(--text2);margin-bottom:14px;line-height:1.7;">
+        Change username once per week. Usernames are unique and permanent once taken.
+      </div>
+      <div class="field"><label>New Username</label><input type="text" id="newUsername" placeholder="new username..."></div>
+      <div class="btn-row"><button class="btn btn-ghost" onclick="changeUsername()">CHANGE USERNAME</button></div>
+      <div id="unameMsg" style="font-size:11px;margin-top:8px;display:none;"></div>
     </div>
   </div>
 </div>
@@ -464,508 +377,519 @@ input::placeholder,textarea::placeholder{color:var(--text3);}
 <div class="tab" id="tab-owner">
   <div id="ownerGate">
     <div class="panel">
-      <div class="panel-body" style="text-align:center;padding:36px;">
-        <div style="font-size:32px;margin-bottom:14px;opacity:0.4;">⬡</div>
-        <div style="font-family:'Orbitron',monospace;font-size:13px;color:var(--accent);letter-spacing:3px;margin-bottom:8px;">OWNER PANEL</div>
-        <div style="color:var(--text2);font-size:11px;margin-bottom:18px;letter-spacing:1px;">Enter owner password to manage scripts</div>
-        <div style="max-width:260px;margin:0 auto;">
-          <input type="password" id="ownerPassInput" placeholder="Owner password..." style="margin-bottom:10px;">
+      <div class="pb" style="text-align:center;padding:36px;">
+        <div style="font-size:28px;margin-bottom:14px;opacity:0.35;">⬡</div>
+        <div style="font-family:'Orbitron',monospace;font-size:12px;color:var(--accent);letter-spacing:3px;margin-bottom:8px;">OWNER PANEL</div>
+        <div style="color:var(--text2);font-size:11px;margin-bottom:16px;letter-spacing:1px;">Enter owner password</div>
+        <div style="max-width:240px;margin:0 auto;">
+          <input type="password" id="ownerPw" placeholder="Password..." style="margin-bottom:10px;">
           <button class="btn btn-primary btn-full" onclick="unlockOwner()">UNLOCK</button>
           <div id="ownerErr" style="color:var(--red);font-size:11px;margin-top:8px;display:none;">Wrong password</div>
         </div>
       </div>
     </div>
   </div>
-
   <div id="ownerPanel" style="display:none;">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
       <div class="owner-badge">★ OWNER ACTIVE</div>
       <button class="btn btn-ghost btn-sm" onclick="lockOwner()">LOCK</button>
     </div>
 
+    <!-- Announcement -->
     <div class="panel">
-      <div class="panel-head"><div class="panel-title">Upload Script</div></div>
-      <div class="panel-body">
+      <div class="ph"><div class="pt">Announcement</div></div>
+      <div class="pb">
+        <div class="field"><label>Message (leave empty to hide)</label><input type="text" id="announceInput" placeholder="e.g. New scripts dropped! Check the hub..."></div>
+        <div class="btn-row"><button class="btn btn-primary" onclick="saveAnnounce()">SAVE & PUBLISH</button></div>
+      </div>
+    </div>
+
+    <!-- Upload -->
+    <div class="panel">
+      <div class="ph"><div class="pt">Upload Script</div></div>
+      <div class="pb">
         <div class="field"><label>Script Name</label><input type="text" id="upName" placeholder="e.g. Universal ESP by xyth"></div>
-        <div class="field"><label>Game</label><input type="text" id="upGame" placeholder="e.g. Da Hood / Universal"></div>
+        <div class="field"><label>Game</label>
+          <select id="upGame">
+            <option value="">Select game...</option>
+            <option>Da Hood</option><option>Prison Life</option><option>Blox Fruits</option>
+            <option>Arsenal</option><option>Universal</option><option>Other</option>
+          </select>
+        </div>
         <div class="field"><label>Description</label><input type="text" id="upDesc" placeholder="Short description..."></div>
         <div class="field"><label>Lua Code</label><textarea id="upCode" rows="10" placeholder="-- paste script here..."></textarea></div>
         <div class="btn-row">
           <button class="btn btn-primary" onclick="uploadScript()">⬆ UPLOAD</button>
-          <button class="btn btn-ghost" onclick="clearUpload()">CLEAR</button>
+          <button class="btn btn-ghost" onclick="clearUp()">CLEAR</button>
         </div>
+        <div id="upMsg" style="font-size:11px;margin-top:8px;display:none;"></div>
       </div>
     </div>
 
+    <!-- Manage -->
     <div class="panel">
-      <div class="panel-head"><div class="panel-title">Manage Scripts</div></div>
-      <div class="panel-body">
-        <div id="manageList" class="script-grid"><div class="empty"><div class="empty-icon">⬡</div><p>No scripts yet</p></div></div>
-      </div>
-    </div>
-
-    <div class="panel">
-      <div class="panel-head"><div class="panel-title">Firebase Setup (Coming Soon)</div></div>
-      <div class="panel-body" style="font-size:12px;color:var(--text2);line-height:1.9;">
-        Currently running on <span style="color:var(--accent3);">localStorage</span> for testing. When you're ready to go live:<br><br>
-        1. Create a Firebase project at <span style="color:var(--accent);">console.firebase.google.com</span><br>
-        2. Enable Firestore + Email/Password Auth<br>
-        3. Replace the config in index.html<br>
-        4. Apply Firestore security rules<br><br>
-        <span class="badge badge-yellow">TESTING MODE</span> &nbsp; Data is saved locally in your browser for now.
-      </div>
+      <div class="ph"><div class="pt">Manage Scripts</div></div>
+      <div class="pb"><div id="manageList" class="grid"><div class="empty"><div class="empty-ico">⬡</div><p>Loading...</p></div></div></div>
     </div>
   </div>
 </div>
 
 </main>
-</div><!-- end #app -->
+</div>
+
+<!-- Edit Profile Popup -->
+<div id="editProfilePopup" style="display:none;" class="popup-overlay" onclick="if(event.target===this)this.style.display='none'">
+  <div class="popup-box">
+    <div class="popup-title">⬡ EDIT PROFILE</div>
+    <div class="field"><label>Bio</label><input type="text" id="editBio" placeholder="Tell people about yourself..."></div>
+    <div class="field"><label>Profile Picture URL</label><input type="text" id="editPfp" placeholder="https://i.imgur.com/..."></div>
+    <div class="btn-row">
+      <button class="btn btn-primary" onclick="saveProfile()">SAVE</button>
+      <button class="btn btn-ghost" onclick="editProfilePopup.style.display='none'">CANCEL</button>
+    </div>
+  </div>
+</div>
+
+<!-- Firebase -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore,collection,getDocs,addDoc,deleteDoc,doc,query,orderBy,serverTimestamp,getCountFromServer,getDoc,setDoc,updateDoc }
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getAuth,createUserWithEmailAndPassword,signInWithEmailAndPassword,signOut,onAuthStateChanged }
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+const cfg = {
+  apiKey:"AIzaSyCrqjHZeVaDtsfqBvo6j_QNR6u8UZQwJrE",
+  authDomain:"lunix-oz.firebaseapp.com",
+  projectId:"lunix-oz",
+  storageBucket:"lunix-oz.firebasestorage.app",
+  messagingSenderId:"646438771133",
+  appId:"1:646438771133:web:9d9f29b87ce70f45709ad4"
+};
+const app=initializeApp(cfg);
+const db=getFirestore(app);
+const auth=getAuth(app);
+
+window._db=db;window._auth=auth;
+window._col=collection;window._getDocs=getDocs;window._addDoc=addDoc;
+window._deleteDoc=deleteDoc;window._doc=doc;window._query=query;
+window._orderBy=orderBy;window._serverTimestamp=serverTimestamp;
+window._getCountFromServer=getCountFromServer;window._getDoc=getDoc;
+window._setDoc=setDoc;window._updateDoc=updateDoc;
+window._createUser=createUserWithEmailAndPassword;
+window._signIn=signInWithEmailAndPassword;
+window._signOut=signOut;
+
+// Fallback — if Firebase takes more than 6 seconds, force show auth
+const loadTimeout = setTimeout(()=>{
+  document.getElementById('loadScreen').style.display='none';
+  document.getElementById('authPage').style.display='flex';
+},6000);
+
+onAuthStateChanged(auth,user=>{
+  clearTimeout(loadTimeout);
+  document.getElementById('loadScreen').style.display='none';
+  if(user){
+    window._user=user;
+    startApp();
+  } else {
+    window._user=null;
+    document.getElementById('authPage').style.display='flex';
+    document.getElementById('app').style.display='none';
+  }
+});
+</script>
 
 <script>
-// ══════════════════════════════════════════
-//  CONSTANTS
-// ══════════════════════════════════════════
-const OWNER_PASS = 'xyth2024'; // change this to your owner password
-const STORAGE_SCRIPTS = 'lunix_scripts';
-const STORAGE_USERS   = 'lunix_users';
-const STORAGE_SESSION = 'lunix_session';
+const OWNER_PASS='xyth2024';
+const OWNER_EMAIL='YOUR_EMAIL@gmail.com'; // ← change this to your firebase email
+const REPO='l9ep/Linux.obfuscator';
 
-// ══════════════════════════════════════════
-//  STATE
-// ══════════════════════════════════════════
-let currentUser  = null;
-let isOwner      = false;
-let obfLevel     = 'light';
-let scripts      = [];
+let scripts=[];
+let myProfile=null;
+let isOwner=false;
+let obfLevel='light';
+let obfHistory=[];
 
-// ══════════════════════════════════════════
-//  INIT
-// ══════════════════════════════════════════
-(function init(){
-  // Load scripts from storage
-  try{ scripts = JSON.parse(localStorage.getItem(STORAGE_SCRIPTS)||'[]'); }catch(e){ scripts=[]; }
-
-  // Restore session
-  const sess = localStorage.getItem(STORAGE_SESSION);
-  if(sess){
-    try{
-      currentUser = JSON.parse(sess);
-      showApp();
-      return;
-    }catch(e){}
-  }
-  // Show auth
-  showAuthPage();
-})();
-
-// ══════════════════════════════════════════
-//  AUTH
-// ══════════════════════════════════════════
-function getUsers(){
-  try{ return JSON.parse(localStorage.getItem(STORAGE_USERS)||'[]'); }catch(e){ return []; }
-}
-function saveUsers(u){ localStorage.setItem(STORAGE_USERS, JSON.stringify(u)); }
-
-function switchAuthTab(tab, el){
-  document.querySelectorAll('.auth-tab').forEach(t=>t.classList.remove('active'));
-  document.querySelectorAll('.auth-form').forEach(f=>f.classList.remove('active'));
+// ── AUTH ──
+function switchTab(t,el){
+  document.querySelectorAll('.auth-tab').forEach(x=>x.classList.remove('active'));
+  document.querySelectorAll('.auth-form').forEach(x=>x.classList.remove('active'));
   el.classList.add('active');
-  document.getElementById(tab+'Form').classList.add('active');
-  hideAuthErrs();
+  document.getElementById(t+'Form').classList.add('active');
+  clearErrs();
 }
+function clearErrs(){ document.querySelectorAll('.auth-err,.auth-ok').forEach(e=>e.style.display='none'); }
+function err(id,m){ const e=document.getElementById(id);e.textContent=m;e.style.display='block'; }
+function ok(id,m){ const e=document.getElementById(id);e.textContent=m;e.style.display='block'; }
 
-function hideAuthErrs(){
-  document.querySelectorAll('.auth-err').forEach(e=>e.style.display='none');
-}
-
-function showAuthErr(id, msg){
-  const el=document.getElementById(id);
-  el.textContent=msg;
-  el.style.display='block';
-}
-
-function doLogin(){
-  const userInput = document.getElementById('loginUser').value.trim();
-  const pass      = document.getElementById('loginPass').value;
-  if(!userInput||!pass){ showAuthErr('loginErr','Fill in all fields'); return; }
-
-  const users = getUsers();
-  const found = users.find(u=>
-    (u.username.toLowerCase()===userInput.toLowerCase() || u.email.toLowerCase()===userInput.toLowerCase())
-    && u.password===hashPass(pass)
-  );
-
-  if(!found){ showAuthErr('loginErr','Invalid username or password'); return; }
-
-  currentUser = {username: found.username, email: found.email};
-  localStorage.setItem(STORAGE_SESSION, JSON.stringify(currentUser));
-  hideAuthErrs();
-  showApp();
-  toast('✓ Welcome back, '+found.username,'var(--accent3)');
-}
-
-function doRegister(){
-  const username = document.getElementById('regUser').value.trim();
-  const email    = document.getElementById('regEmail').value.trim();
-  const pass     = document.getElementById('regPass').value;
-
-  if(!username||!email||!pass){ showAuthErr('registerErr','Fill in all fields'); return; }
-  if(pass.length<6){ showAuthErr('registerErr','Password must be 6+ characters'); return; }
-  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){ showAuthErr('registerErr','Invalid email'); return; }
-  if(!/^[a-zA-Z0-9_]{3,20}$/.test(username)){ showAuthErr('registerErr','Username: 3-20 chars, letters/numbers/_'); return; }
-
-  const users = getUsers();
-  if(users.find(u=>u.username.toLowerCase()===username.toLowerCase())){
-    showAuthErr('registerErr','Username already taken'); return;
+async function doLogin(){
+  const email=document.getElementById('liEmail').value.trim();
+  const pass=document.getElementById('liPass').value;
+  if(!email||!pass){err('liErr','Fill in all fields');return;}
+  try{ await window._signIn(window._auth,email,pass); }
+  catch(e){
+    const m=e.code==='auth/invalid-credential'||e.code==='auth/user-not-found'||e.code==='auth/wrong-password'
+      ?'Invalid email or password':'Error: '+e.message;
+    err('liErr',m);
   }
-  if(users.find(u=>u.email.toLowerCase()===email.toLowerCase())){
-    showAuthErr('registerErr','Email already registered'); return;
-  }
-
-  users.push({username, email, password: hashPass(pass), createdAt: Date.now()});
-  saveUsers(users);
-
-  currentUser = {username, email};
-  localStorage.setItem(STORAGE_SESSION, JSON.stringify(currentUser));
-  hideAuthErrs();
-  showApp();
-  toast('✓ Account created! Welcome, '+username,'var(--accent3)');
 }
-
-function doLogout(){
-  if(!confirm('Sign out?')) return;
-  currentUser = null;
-  isOwner = false;
-  localStorage.removeItem(STORAGE_SESSION);
-  document.getElementById('app').style.display='none';
-  document.getElementById('authPage').style.display='flex';
-  document.getElementById('loginUser').value='';
-  document.getElementById('loginPass').value='';
-  lockOwner(true);
+async function doRegister(){
+  const username=document.getElementById('rgUser').value.trim();
+  const email=document.getElementById('rgEmail').value.trim();
+  const pass=document.getElementById('rgPass').value;
+  if(!username||!email||!pass){err('rgErr','Fill in all fields');return;}
+  if(pass.length<6){err('rgErr','Password min 6 characters');return;}
+  if(!/^[a-zA-Z0-9_]{3,20}$/.test(username)){err('rgErr','Username: 3-20 chars, letters/numbers/_');return;}
+  try{
+    // Check username taken
+    const snap=await window._getDocs(window._col(window._db,'users'));
+    let taken=false;
+    snap.forEach(d=>{ if(d.data().username?.toLowerCase()===username.toLowerCase()) taken=true; });
+    if(taken){err('rgErr','Username already taken');return;}
+    const cred=await window._createUser(window._auth,email,pass);
+    await window._setDoc(window._doc(window._db,'users',cred.user.uid),{
+      uid:cred.user.uid,username,email,
+      bio:'',pfp:'',
+      createdAt:window._serverTimestamp(),
+      lastUsernameChange:null,
+      uploads:0
+    });
+    ok('rgOk','Account created! Signing in...');
+  }catch(e){
+    const m=e.code==='auth/email-already-in-use'?'Email already registered':e.code==='auth/weak-password'?'Password too weak':'Error: '+e.message;
+    err('rgErr',m);
+  }
+}
+async function doLogout(){
+  if(!confirm('Sign out?'))return;
+  isOwner=false;lockOwner(true);
+  await window._signOut(window._auth);
   toast('Signed out','var(--text2)');
 }
+document.getElementById('liPass').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin();});
+document.getElementById('rgPass').addEventListener('keydown',e=>{if(e.key==='Enter')doRegister();});
 
-// simple hash (not cryptographic — fine for local testing)
-function hashPass(p){
-  let h=0;
-  for(let i=0;i<p.length;i++){ h=((h<<5)-h)+p.charCodeAt(i); h|=0; }
-  return h.toString(36);
-}
-
-function showAuthPage(){
-  document.getElementById('authPage').style.display='flex';
-  document.getElementById('app').style.display='none';
-}
-
-function showApp(){
+// ── START APP ──
+async function startApp(){
   document.getElementById('authPage').style.display='none';
   document.getElementById('app').style.display='block';
-  document.getElementById('headerUsername').textContent = currentUser.username;
-  renderAll();
+  // Load user profile
+  try{
+    const d=await window._getDoc(window._doc(window._db,'users',window._user.uid));
+    if(d.exists()) myProfile=d.data();
+    else myProfile={username:window._user.email.split('@')[0],bio:'',pfp:'',uploads:0};
+  }catch(e){ myProfile={username:'user',bio:'',pfp:'',uploads:0}; }
+  document.getElementById('hdrName').textContent=myProfile.username;
+  if(window._user.email===OWNER_EMAIL){
+    document.getElementById('nb-owner').style.display='block';
+    document.getElementById('ownerBadge').style.display='inline-flex';
+  }
+  await loadAll();
+  renderProfile();
+  loadAnnouncement();
 }
 
-// ══════════════════════════════════════════
-//  TABS
-// ══════════════════════════════════════════
-function showTab(name){
+// ── TABS ──
+function go(name){
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
   document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
   document.getElementById('tab-'+name).classList.add('active');
-  document.getElementById('nav-'+name).classList.add('active');
+  document.getElementById('nb-'+name).classList.add('active');
 }
 
-// ══════════════════════════════════════════
-//  SCRIPTS
-// ══════════════════════════════════════════
-function saveScripts(){ localStorage.setItem(STORAGE_SCRIPTS, JSON.stringify(scripts)); }
+// ── LOAD ALL ──
+async function loadAll(){
+  try{
+    const q=window._query(window._col(window._db,'scripts'),window._orderBy('createdAt','desc'));
+    const snap=await window._getDocs(q);
+    scripts=[];
+    snap.forEach(d=>scripts.push({id:d.id,...d.data()}));
+    document.getElementById('sScripts').textContent=scripts.length;
+    renderHome();
+    renderScripts();
+    renderMyScripts();
+    if(isOwner)renderManage();
+  }catch(e){ console.error(e); }
+  try{
+    const c=await window._getCountFromServer(window._col(window._db,'users'));
+    document.getElementById('sUsers').textContent=c.data().count;
+  }catch(e){}
+}
 
-function renderAll(){
-  const count = scripts.length;
-  document.getElementById('stat-scripts').textContent = count;
-  renderDash();
+// ── ANNOUNCEMENT ──
+async function loadAnnouncement(){
+  try{
+    const d=await window._getDoc(window._doc(window._db,'settings','announcement'));
+    if(d.exists()&&d.data().text){
+      document.getElementById('announceText').innerHTML=d.data().text;
+      document.getElementById('announceBar').style.display='flex';
+      if(isOwner) document.getElementById('announceInput').value=d.data().text;
+    }
+  }catch(e){}
+}
+async function saveAnnounce(){
+  const text=document.getElementById('announceInput').value.trim();
+  try{
+    await window._setDoc(window._doc(window._db,'settings','announcement'),{text});
+    toast('✓ Announcement saved','var(--accent3)');
+    loadAnnouncement();
+  }catch(e){ toast('Error: '+e.message,'var(--red)'); }
+}
+
+// ── RENDER ──
+function renderHome(){
+  const el=document.getElementById('homeScripts');
+  if(!scripts.length){el.innerHTML='<div class="empty"><div class="empty-ico">⬡</div><p>No scripts yet</p></div>';return;}
+  el.innerHTML='';
+  scripts.slice(0,6).forEach(s=>el.appendChild(mkCard(s,false)));
+}
+
+let filteredScripts=[];
+function renderScripts(){
+  filteredScripts=[...scripts];
   renderScriptList();
-  if(isOwner) renderManage();
 }
-
-function renderDash(){
-  const el = document.getElementById('dashScripts');
-  if(!scripts.length){
-    el.innerHTML='<div class="empty"><div class="empty-icon">⬡</div><p>No scripts yet</p></div>';
-    return;
-  }
-  el.innerHTML='';
-  scripts.slice(0,6).forEach(s=>{
-    el.appendChild(makeCard(s, false));
+function filterScripts(){
+  const q=document.getElementById('searchInput').value.toLowerCase();
+  const g=document.getElementById('filterGame').value;
+  filteredScripts=scripts.filter(s=>{
+    const matchQ=!q||(s.name||'').toLowerCase().includes(q)||(s.desc||'').toLowerCase().includes(q);
+    const matchG=!g||s.game===g;
+    return matchQ&&matchG;
   });
+  renderScriptList();
 }
-
 function renderScriptList(){
-  const el = document.getElementById('scriptList');
-  if(isOwner) document.getElementById('ownerBadge').style.display='inline-flex';
-  else document.getElementById('ownerBadge').style.display='none';
-
-  if(!scripts.length){
-    el.innerHTML='<div class="empty"><div class="empty-icon">⬡</div><p>No scripts hosted yet</p></div>';
-    return;
-  }
+  const el=document.getElementById('scriptList');
+  if(!filteredScripts.length){el.innerHTML='<div class="empty"><div class="empty-ico">⬡</div><p>No scripts found</p></div>';return;}
   el.innerHTML='';
-  scripts.forEach(s=>{
-    el.appendChild(makeCard(s, false));
-  });
+  filteredScripts.forEach(s=>el.appendChild(mkCard(s,false)));
 }
-
+function renderMyScripts(){
+  const el=document.getElementById('myScripts');
+  const mine=scripts.filter(s=>s.uploaderUid===window._user?.uid);
+  if(!mine.length){el.innerHTML='<div class="empty"><div class="empty-ico">⬡</div><p>No scripts uploaded yet</p></div>';return;}
+  el.innerHTML='';
+  mine.forEach(s=>el.appendChild(mkCard(s,false)));
+}
 function renderManage(){
-  const el = document.getElementById('manageList');
-  if(!scripts.length){
-    el.innerHTML='<div class="empty"><div class="empty-icon">⬡</div><p>No scripts to manage</p></div>';
-    return;
-  }
+  const el=document.getElementById('manageList');
+  if(!scripts.length){el.innerHTML='<div class="empty"><div class="empty-ico">⬡</div><p>No scripts</p></div>';return;}
   el.innerHTML='';
-  scripts.forEach(s=>{
-    el.appendChild(makeCard(s, true));
-  });
+  scripts.forEach(s=>el.appendChild(mkCard(s,true)));
 }
 
-function makeCard(s, manage){
-  const card = document.createElement('div');
-  card.className = 'script-card';
-  const gameTag = s.game ? `<span class="badge badge-blue">${esc(s.game)}</span> ` : '';
-  const actions = manage
-    ? `<button class="btn btn-danger btn-sm" onclick="deleteScript('${s.id}')">✕ DELETE</button>
-       <button class="btn btn-ghost btn-sm" onclick="copyRaw('${s.id}')">RAW</button>`
-    : `<button class="btn btn-ghost btn-sm" onclick="showLS('${s.id}')">⬡ LOADSTRING</button>
-       <button class="btn btn-green btn-sm" onclick="copyRaw('${s.id}')">COPY RAW</button>`;
-  card.innerHTML=`
-    <div class="sc-name">${esc(s.name||'Unnamed')}</div>
-    <div class="sc-meta">${gameTag}${esc(s.desc||'')}</div>
-    <div class="sc-actions">${actions}</div>`;
-  return card;
+function mkCard(s,manage){
+  const c=document.createElement('div');
+  c.className='scard';
+  const gtag=s.game?`<span class="badge b-blue">${esc(s.game)}</span> `:'';
+  const acts=manage
+    ?`<button class="btn btn-danger btn-sm" onclick="delScript('${s.id}')">✕ DELETE</button>
+      <button class="btn btn-ghost btn-sm" onclick="copyRaw('${s.id}')">RAW</button>`
+    :`<button class="btn btn-ghost btn-sm" onclick="showLS('${s.id}')">⬡ LOADSTRING</button>
+      <button class="btn btn-green btn-sm" onclick="copyRaw('${s.id}')">COPY RAW</button>`;
+  c.innerHTML=`<div class="scard-name">${esc(s.name||'Unnamed')}</div>
+    <div class="scard-meta">${gtag}${esc(s.desc||'')}</div>
+    <div class="scard-acts">${acts}</div>`;
+  return c;
 }
 
 function showLS(id){
-  const s = scripts.find(x=>x.id===id);
-  if(!s) return;
-  const ls = `loadstring(game:HttpGet("https://raw.githubusercontent.com/YOUR_REPO/main/scripts/${s.id}.lua",true))()`;
-  const pop = document.createElement('div');
-  pop.className='popup-overlay';
-  pop.innerHTML=`<div class="popup-box">
+  const s=scripts.find(x=>x.id===id);if(!s)return;
+  const ls=`loadstring(game:HttpGet("https://raw.githubusercontent.com/${REPO}/main/${esc(s.name.replace(/\s+/g,'_'))}.lua",true))()`;
+  const p=document.createElement('div');
+  p.className='popup-overlay';
+  p.innerHTML=`<div class="popup-box">
     <div class="popup-title">⬡ LOADSTRING — ${esc(s.name)}</div>
-    <div style="font-size:10px;color:var(--text2);letter-spacing:1px;margin-bottom:6px;">DELTA EXECUTOR COMMAND</div>
-    <div class="code-box" id="lsText">${esc(ls)}</div>
-    <div style="font-size:10px;color:var(--text2);margin-top:8px;letter-spacing:1px;">
-      ⚠ Replace YOUR_REPO with your GitHub repo path when using GitHub raw hosting.
-    </div>
+    <div style="font-size:10px;color:var(--text2);margin-bottom:6px;letter-spacing:1px;">DELTA EXECUTOR COMMAND</div>
+    <div class="code-box" id="lsTxt">${esc(ls)}</div>
+    <div style="font-size:10px;color:var(--text2);margin-top:8px;">Upload the .lua file to your GitHub repo to activate.</div>
     <div class="btn-row">
-      <button class="btn btn-primary" onclick="navigator.clipboard.writeText(document.getElementById('lsText').textContent);toast('✓ Copied','var(--accent3)')">COPY</button>
+      <button class="btn btn-primary" onclick="navigator.clipboard.writeText(document.getElementById('lsTxt').textContent);toast('✓ Copied','var(--accent3)')">COPY</button>
       <button class="btn btn-ghost" onclick="this.closest('.popup-overlay').remove()">CLOSE</button>
     </div>
   </div>`;
-  pop.addEventListener('click', e=>{ if(e.target===pop) pop.remove(); });
-  document.body.appendChild(pop);
+  p.addEventListener('click',e=>{if(e.target===p)p.remove();});
+  document.body.appendChild(p);
 }
 
 function copyRaw(id){
-  const s = scripts.find(x=>x.id===id);
-  if(!s){ toast('Not found','var(--red)'); return; }
+  const s=scripts.find(x=>x.id===id);
+  if(!s){toast('Not found','var(--red)');return;}
   navigator.clipboard.writeText(s.code||'').then(()=>toast('✓ Raw copied','var(--accent3)'));
 }
 
-function uploadScript(){
-  if(!isOwner){ toast('Owner only','var(--red)'); return; }
-  const name = document.getElementById('upName').value.trim();
-  const game = document.getElementById('upGame').value.trim();
-  const desc = document.getElementById('upDesc').value.trim();
-  const code = document.getElementById('upCode').value.trim();
-  if(!name||!code){ toast('⚠ Name + code required','var(--red)'); return; }
-  const s = {
-    id: Date.now().toString(36)+Math.random().toString(36).slice(2,6),
-    name, game, desc, code,
-    createdAt: Date.now()
-  };
-  scripts.unshift(s);
-  saveScripts();
-  renderAll();
-  clearUpload();
-  toast('✓ Script uploaded','var(--accent3)');
+async function uploadScript(){
+  if(!isOwner){toast('Owner only','var(--red)');return;}
+  const name=document.getElementById('upName').value.trim();
+  const game=document.getElementById('upGame').value;
+  const desc=document.getElementById('upDesc').value.trim();
+  const code=document.getElementById('upCode').value.trim();
+  if(!name||!code){toast('Name + code required','var(--red)');return;}
+  const msg=document.getElementById('upMsg');
+  msg.style.display='block';msg.style.color='var(--text2)';msg.textContent='Uploading...';
+  try{
+    await window._addDoc(window._col(window._db,'scripts'),{
+      name,game,desc,code,
+      uploaderUid:window._user.uid,
+      uploaderName:myProfile?.username||'owner',
+      createdAt:window._serverTimestamp(),loads:0
+    });
+    msg.style.color='var(--accent3)';msg.textContent='✓ Uploaded!';
+    clearUp();await loadAll();renderManage();
+    toast('✓ Script uploaded','var(--accent3)');
+  }catch(e){ msg.style.color='var(--red)';msg.textContent='✗ '+e.message; }
 }
 
-function deleteScript(id){
-  if(!isOwner){ toast('Owner only','var(--red)'); return; }
-  if(!confirm('Delete this script?')) return;
-  scripts = scripts.filter(s=>s.id!==id);
-  saveScripts();
-  renderAll();
-  toast('✓ Deleted','var(--accent3)');
+async function delScript(id){
+  if(!isOwner){toast('Owner only','var(--red)');return;}
+  if(!confirm('Delete this script?'))return;
+  try{
+    await window._deleteDoc(window._doc(window._db,'scripts',id));
+    toast('✓ Deleted','var(--accent3)');
+    await loadAll();renderManage();
+  }catch(e){ toast('✗ Failed','var(--red)'); }
 }
+function clearUp(){ ['upName','upDesc','upCode'].forEach(i=>document.getElementById(i).value=''); document.getElementById('upGame').value=''; }
 
-function clearUpload(){
-  ['upName','upGame','upDesc','upCode'].forEach(id=>{ document.getElementById(id).value=''; });
-}
-
-// ══════════════════════════════════════════
-//  OWNER
-// ══════════════════════════════════════════
+// ── OWNER ──
 function unlockOwner(){
-  const val = document.getElementById('ownerPassInput').value;
-  if(val !== OWNER_PASS){
+  if(document.getElementById('ownerPw').value!==OWNER_PASS){
     document.getElementById('ownerErr').style.display='block';
-    document.getElementById('ownerPassInput').value='';
-    return;
+    document.getElementById('ownerPw').value='';return;
   }
-  isOwner = true;
+  isOwner=true;
   document.getElementById('ownerGate').style.display='none';
   document.getElementById('ownerPanel').style.display='block';
-  document.getElementById('ownerPassInput').value='';
+  document.getElementById('ownerPw').value='';
   document.getElementById('ownerErr').style.display='none';
   renderManage();
-  renderScriptList();
   toast('✓ Owner unlocked','var(--yellow)');
 }
-
-function lockOwner(silent){
-  isOwner = false;
+function lockOwner(s){
+  isOwner=false;
   document.getElementById('ownerGate').style.display='block';
   document.getElementById('ownerPanel').style.display='none';
-  renderScriptList();
-  if(!silent) toast('Locked','var(--text2)');
+  if(!s)toast('Locked','var(--text2)');
+}
+document.getElementById('ownerPw').addEventListener('keydown',e=>{if(e.key==='Enter')unlockOwner();});
+
+// ── PROFILE ──
+function renderProfile(){
+  if(!myProfile)return;
+  document.getElementById('profileName').textContent=myProfile.username||'—';
+  document.getElementById('profileBio').textContent=myProfile.bio||'No bio yet.';
+  document.getElementById('profileJoined').textContent=myProfile.createdAt?.toDate ? 
+    myProfile.createdAt.toDate().toLocaleDateString('en',{month:'short',year:'numeric'}) : '—';
+  const mine=scripts.filter(s=>s.uploaderUid===window._user?.uid);
+  document.getElementById('profileUploads').textContent=mine.length;
+  const av=document.getElementById('profileAvatar');
+  if(myProfile.pfp){ av.innerHTML=`<img src="${esc(myProfile.pfp)}" onerror="this.parentElement.innerHTML='👤'">`; }
+  else av.innerHTML='👤';
+}
+function openEditProfile(){
+  document.getElementById('editBio').value=myProfile?.bio||'';
+  document.getElementById('editPfp').value=myProfile?.pfp||'';
+  document.getElementById('editProfilePopup').style.display='flex';
+}
+async function saveProfile(){
+  const bio=document.getElementById('editBio').value.trim();
+  const pfp=document.getElementById('editPfp').value.trim();
+  try{
+    await window._updateDoc(window._doc(window._db,'users',window._user.uid),{bio,pfp});
+    myProfile={...myProfile,bio,pfp};
+    renderProfile();
+    document.getElementById('editProfilePopup').style.display='none';
+    toast('✓ Profile updated','var(--accent3)');
+  }catch(e){ toast('Error: '+e.message,'var(--red)'); }
+}
+async function changeUsername(){
+  const newU=document.getElementById('newUsername').value.trim();
+  const msg=document.getElementById('unameMsg');
+  if(!newU){msg.style.display='block';msg.style.color='var(--red)';msg.textContent='Enter a username';return;}
+  if(!/^[a-zA-Z0-9_]{3,20}$/.test(newU)){msg.style.display='block';msg.style.color='var(--red)';msg.textContent='3-20 chars, letters/numbers/_ only';return;}
+  // Check week limit
+  if(myProfile?.lastUsernameChange){
+    const last=myProfile.lastUsernameChange.toDate?myProfile.lastUsernameChange.toDate():new Date(myProfile.lastUsernameChange);
+    const diff=(Date.now()-last.getTime())/(1000*60*60*24);
+    if(diff<7){
+      const left=Math.ceil(7-diff);
+      msg.style.display='block';msg.style.color='var(--red)';
+      msg.textContent=`Can change again in ${left} day${left!==1?'s':''}`;return;
+    }
+  }
+  // Check taken
+  const snap=await window._getDocs(window._col(window._db,'users'));
+  let taken=false;
+  snap.forEach(d=>{if(d.id!==window._user.uid&&d.data().username?.toLowerCase()===newU.toLowerCase())taken=true;});
+  if(taken){msg.style.display='block';msg.style.color='var(--red)';msg.textContent='Username already taken';return;}
+  try{
+    await window._updateDoc(window._doc(window._db,'users',window._user.uid),{
+      username:newU,lastUsernameChange:window._serverTimestamp()
+    });
+    myProfile={...myProfile,username:newU};
+    document.getElementById('hdrName').textContent=newU;
+    document.getElementById('newUsername').value='';
+    renderProfile();
+    msg.style.display='block';msg.style.color='var(--accent3)';msg.textContent='✓ Username changed!';
+    toast('✓ Username updated','var(--accent3)');
+  }catch(e){ msg.style.display='block';msg.style.color='var(--red)';msg.textContent='Error: '+e.message; }
 }
 
-// enter key on owner pass
-document.getElementById('ownerPassInput').addEventListener('keydown',e=>{
-  if(e.key==='Enter') unlockOwner();
-});
-document.getElementById('loginPass').addEventListener('keydown',e=>{
-  if(e.key==='Enter') doLogin();
-});
-document.getElementById('regPass').addEventListener('keydown',e=>{
-  if(e.key==='Enter') doRegister();
-});
-
-// ══════════════════════════════════════════
-//  OBFUSCATOR
-// ══════════════════════════════════════════
-const OBF_DESCS = {
-  light:  'Light — Variable renaming + string byte encoding',
-  medium: 'Medium — XOR encryption wrapped in load() call',
-  max:    'Max — Double XOR + garbage injection + multi-layer wrapping'
+// ── OBFUSCATOR ──
+const DESCS={
+  light:'Light — Variable renaming + string byte encoding',
+  medium:'Medium — XOR encryption wrapped in load() call',
+  max:'Max — Double XOR + garbage injection + multi-layer wrap'
 };
-
-function setObfLevel(l, el){
+function setLvl(l,el){
   obfLevel=l;
-  document.querySelectorAll('.obf-level').forEach(e=>e.classList.remove('active'));
-  el.classList.add('active');
-  document.getElementById('obfDesc').textContent = OBF_DESCS[l];
+  document.querySelectorAll('.obf-lvl').forEach(e=>e.classList.remove('on'));
+  el.classList.add('on');
+  document.getElementById('obfDesc').textContent=DESCS[l];
 }
-
 function runObf(){
-  const inp = document.getElementById('obfIn').value;
-  if(!inp.trim()){ toast('⚠ No input','var(--red)'); return; }
-  const out = obfuscate(inp, obfLevel);
-  document.getElementById('obfOut').value = out;
-  const r = Math.round((out.length/inp.length)*100);
-  document.getElementById('obfStats').textContent = `${inp.length} → ${out.length} chars (${r}%)`;
+  const inp=document.getElementById('obfIn').value;
+  if(!inp.trim()){toast('No input','var(--red)');return;}
+  const out=obfuscate(inp,obfLevel);
+  document.getElementById('obfOut').value=out;
+  const r=Math.round((out.length/inp.length)*100);
+  document.getElementById('obfStats').textContent=`${inp.length} → ${out.length} chars (${r}%)`;
+  // Save to history
+  obfHistory.unshift({level:obfLevel,preview:inp.slice(0,40)+'...',output:out,time:new Date().toLocaleTimeString()});
+  if(obfHistory.length>5) obfHistory.pop();
+  renderHistory();
   toast('✓ Obfuscated ('+obfLevel+')','var(--accent3)');
 }
-
-function obfuscate(code, level){
-  if(level==='light')  return obfLight(code);
-  if(level==='medium') return obfMedium(code);
-  return obfMax(code);
-}
-
-function obfLight(code){
-  let out = '--// Lunix Obfuscator | Light | xyth\n';
-  // Rename local vars
-  out += renameLocals(code);
-  return out;
-}
-
-function obfMedium(code){
-  const key = Math.floor(Math.random()*180+20);
-  const enc = strToBytes(code).map(b=>b^key);
-  return `--// Lunix Obfuscator | Medium | xyth
-local _k=${key}
-local _d={${enc.join(',')}}
-local _o={}
-for _i=1,#_d do _o[_i]=string.char(_d[_i]^_k) end
-load(table.concat(_o))()`;
-}
-
-function obfMax(code){
-  const k1 = Math.floor(Math.random()*120+30);
-  const k2 = Math.floor(Math.random()*120+30);
-  const enc = strToBytes(code).map(b=>(b^k1)^k2);
-  const junk = Array.from({length:8},()=>'--[['+ rh(12) +']]').join('\n');
-  const v1=rh(5),v2=rh(5),v3=rh(5);
-  return `--// Lunix Obfuscator | MAX | xyth
---// ${rh(20)}
-${junk}
-local _${v1}=${k1};local _${v2}=${k2}
-local _${v3}={${enc.join(',')}}
-local _r={}
-for _i=1,#_${v3} do
-  local _b=(_${v3}[_i]^_${v2})^_${v1}
-  _r[_i]=string.char(_b)
-end
-load(table.concat(_r))()`;
-}
-
-function renameLocals(code){
-  const reserved=new Set('and,break,do,else,elseif,end,false,for,function,goto,if,in,local,nil,not,or,repeat,return,then,true,until,while,self,_G,pairs,ipairs,type,print,tostring,tonumber,math,table,string,game,workspace,script,wait,task,Instance,Color3,Vector3,UDim2,CFrame,Enum,Ray,Drawing,pcall,xpcall,error,assert,rawget,rawset,require,load,unpack,select,next'.split(','));
-  const map={};let ctr=0;
-  const newName=()=>'_L'+('lIiOo0Il'.split('').sort(()=>Math.random()-0.5).join('')).slice(0,4)+(ctr++).toString(36);
-  code=code.replace(/\blocal\s+([a-zA-Z_][a-zA-Z0-9_]*)\b/g,(m,n)=>{
-    if(!reserved.has(n)){ if(!map[n])map[n]=newName(); return 'local '+map[n]; }
-    return m;
+function renderHistory(){
+  const hp=document.getElementById('obfHistPanel');
+  const hl=document.getElementById('obfHistList');
+  if(!obfHistory.length){hp.style.display='none';return;}
+  hp.style.display='block';
+  hl.innerHTML='';
+  obfHistory.forEach((h,i)=>{
+    const d=document.createElement('div');
+    d.style.cssText='display:flex;align-items:center;justify-content:space-between;padding:8px 10px;background:var(--bg2);border:1px solid var(--border2);border-radius:6px;margin-bottom:6px;font-size:11px;';
+    d.innerHTML=`<span style="color:var(--text2);">${h.time} · <span style="color:var(--accent)">${h.level}</span></span>
+      <button class="btn btn-ghost btn-sm" onclick="navigator.clipboard.writeText(obfHistory[${i}].output);toast('✓ Copied','var(--accent3)')">COPY</button>`;
+    hl.appendChild(d);
   });
-  Object.entries(map).forEach(([orig,rep])=>{
-    code=code.replace(new RegExp('\\b'+orig+'\\b','g'),rep);
-  });
-  return code;
 }
+function obfuscate(c,l){ if(l==='light')return obfL(c); if(l==='medium')return obfM(c); return obfX(c); }
+function obfL(c){ return '--// Lunix Obfuscator | Light | yuki\n'+renameL(c); }
+function obfM(c){ const k=~~(Math.random()*180+20),e=s2b(c).map(b=>b^k); return `--// Lunix Obfuscator | Medium | yuki\nlocal _k=${k}\nlocal _d={${e}}\nlocal _o={}\nfor _i=1,#_d do _o[_i]=string.char(_d[_i]^_k) end\nload(table.concat(_o))()`; }
+function obfX(c){ const k1=~~(Math.random()*120+30),k2=~~(Math.random()*120+30),e=s2b(c).map(b=>(b^k1)^k2),j=Array.from({length:8},()=>'--[['+rh(12)+']]').join('\n'),v1=rh(5),v2=rh(5),v3=rh(5); return `--// Lunix Obfuscator | MAX | yuki\n--// ${rh(20)}\n${j}\nlocal _${v1}=${k1};local _${v2}=${k2}\nlocal _${v3}={${e}}\nlocal _r={}\nfor _i=1,#_${v3} do\n  local _b=(_${v3}[_i]^_${v2})^_${v1}\n  _r[_i]=string.char(_b)\nend\nload(table.concat(_r))()`; }
+function renameL(code){ const res=new Set('and,break,do,else,elseif,end,false,for,function,goto,if,in,local,nil,not,or,repeat,return,then,true,until,while,self,_G,pairs,ipairs,type,print,tostring,tonumber,math,table,string,game,workspace,script,wait,task,Instance,Color3,Vector3,UDim2,CFrame,Enum,Ray,Drawing,pcall,xpcall,error,assert,rawget,rawset,require,load,unpack,select,next'.split(',')); const map={};let c=0;const nn=()=>'_L'+('lIiOo0Il'.split('').sort(()=>Math.random()-0.5).join('')).slice(0,4)+(c++).toString(36); code=code.replace(/\blocal\s+([a-zA-Z_][a-zA-Z0-9_]*)\b/g,(m,n)=>{if(!res.has(n)){if(!map[n])map[n]=nn();return 'local '+map[n];}return m;}); Object.entries(map).forEach(([o,r])=>{code=code.replace(new RegExp('\\b'+o+'\\b','g'),r);}); return code; }
+function s2b(s){ return Array.from(s).map(c=>c.charCodeAt(0)); }
+function rh(n=8){ return Array.from({length:n},()=>~~(Math.random()*16).toString(16)).join(''); }
+function copyObf(){ const v=document.getElementById('obfOut').value;if(!v){toast('Nothing','var(--red)');return;} navigator.clipboard.writeText(v).then(()=>toast('✓ Copied','var(--accent3)')); }
+function dlObf(){ const v=document.getElementById('obfOut').value;if(!v){toast('Nothing','var(--red)');return;} const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([v],{type:'text/plain'}));a.download='obf_lunix.lua';a.click(); }
+function swapObf(){ const v=document.getElementById('obfOut').value;if(!v){toast('No output','var(--red)');return;} document.getElementById('obfIn').value=v;document.getElementById('obfOut').value='';document.getElementById('obfStats').textContent='';toast('↺ Swapped','var(--accent)'); }
 
-function strToBytes(s){ return Array.from(s).map(c=>c.charCodeAt(0)); }
-function rh(n=8){ return Array.from({length:n},()=>Math.floor(Math.random()*16).toString(16)).join(''); }
-
-function copyObf(){
-  const v=document.getElementById('obfOut').value;
-  if(!v){toast('Nothing to copy','var(--red)');return;}
-  navigator.clipboard.writeText(v).then(()=>toast('✓ Copied','var(--accent3)'));
-}
-
-function dlObf(){
-  const v=document.getElementById('obfOut').value;
-  if(!v){toast('Nothing to download','var(--red)');return;}
-  const a=document.createElement('a');
-  a.href=URL.createObjectURL(new Blob([v],{type:'text/plain'}));
-  a.download='obf_xyth.lua';a.click();
-}
-
-function swapObf(){
-  const v=document.getElementById('obfOut').value;
-  if(!v){toast('No output to swap','var(--red)');return;}
-  document.getElementById('obfIn').value=v;
-  document.getElementById('obfOut').value='';
-  document.getElementById('obfStats').textContent='';
-  toast('↺ Swapped to input','var(--accent)');
-}
-
-// ══════════════════════════════════════════
-//  TOAST + UTILS
-// ══════════════════════════════════════════
-function toast(msg, color){
-  const t=document.getElementById('toast');
-  t.textContent=msg;
-  t.style.borderColor=(color||'var(--accent2)').replace('var(','').replace(')','');
-  t.style.color=color||'var(--accent)';
-  t.classList.add('show');
-  clearTimeout(t._timer);
-  t._timer=setTimeout(()=>t.classList.remove('show'),2600);
-}
-
-function esc(s){
-  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-}
+// ── UTILS ──
+function toast(m,c){ const t=document.getElementById('toast');t.textContent=m;t.style.color=c||'var(--accent)';t.classList.add('show');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),2500); }
+function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 </script>
 </body>
 </html>
