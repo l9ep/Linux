@@ -3,53 +3,59 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lunix | Instant Script Hub</title>
+    <title>Lunix | Pro Script Hub</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Space+Mono&display=swap');
-        body { background: #050505; color: #00ff41; font-family: 'Space Mono', monospace; }
-        .hacker-card { background: #0a0a0a; border: 1px solid #1a1a1a; box-shadow: 0 0 15px rgba(0,0,0,0.5); }
-        .glow:focus { border-color: #00ff41; box-shadow: 0 0 10px #00ff4133; outline: none; }
+        @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap');
+        body { background: #020202; color: #00ff41; font-family: 'Space Mono', monospace; }
+        .panel { background: #0a0a0a; border: 1px solid #1a1a1a; }
+        .btn { transition: all 0.2s; border-radius: 4px; font-weight: bold; text-transform: uppercase; font-size: 10px; }
+        .btn:active { transform: scale(0.95); }
+        textarea { background: #000 !important; border: 1px solid #111 !important; color: #00ff41 !important; scrollbar-width: thin; }
     </style>
 </head>
-<body class="p-4 flex flex-col items-center">
+<body class="p-4 sm:p-8">
 
-    <div id="main-ui" class="w-full max-w-2xl">
-        <header class="mb-8 mt-4">
-            <h1 class="text-4xl font-black text-white italic">LUNIX<span class="text-green-500">.io</span></h1>
-            <p class="text-[10px] text-gray-500 uppercase tracking-widest">No-Login Anonymous Script Hosting</p>
-        </header>
+    <div class="max-w-4xl mx-auto flex justify-between items-center mb-6">
+        <h1 class="text-3xl font-black text-white italic tracking-tighter">LUNIX<span class="text-green-500">_PRO</span></h1>
+        <button onclick="location.reload()" class="btn border border-red-900 px-3 py-1 text-red-500">Refresh / New</button>
+    </div>
 
-        <div class="hacker-card p-6 rounded-xl mb-6">
-            <div class="flex justify-between items-center mb-4">
-                <span class="text-[10px] font-bold text-gray-400 uppercase">Input Terminal</span>
-                <select id="obf-level" class="bg-black border border-gray-800 text-[10px] text-green-500 p-1 rounded">
-                    <option value="light">Light Obf</option>
-                    <option value="max">Max VM</option>
-                </select>
+    <div class="max-w-4xl mx-auto grid grid-cols-1 gap-6">
+        
+        <div class="panel p-5 rounded-lg">
+            <div class="flex justify-between items-center mb-3">
+                <span class="text-[10px] text-gray-500 uppercase font-bold">Input Terminal</span>
+                <input type="file" id="fileInput" class="hidden" accept=".lua,.txt">
+                <button onclick="document.getElementById('fileInput').click()" class="text-blue-400 text-[10px] hover:underline">UPLOAD .LUA FILE</button>
             </div>
             
-            <textarea id="script-input" class="w-full h-64 bg-black border border-gray-800 p-4 rounded-lg text-sm text-green-400 glow" placeholder="-- Paste your script here..."></textarea>
+            <textarea id="main-input" class="w-full h-64 p-4 text-sm rounded outline-none" placeholder="-- Paste or Upload your script here..."></textarea>
             
-            <button id="gen-btn" onclick="uploadScript()" class="w-full mt-4 bg-green-600 text-black font-bold py-4 rounded-lg hover:bg-green-400 transition-transform active:scale-95">
-                GENERATE DELTA LINK
-            </button>
+            <div class="grid grid-cols-2 gap-2 mt-4">
+                <button onclick="processScript('obfuscate')" class="btn bg-green-600 text-black py-3">Obfuscate & Save</button>
+                <button onclick="processScript('raw')" class="btn bg-white text-black py-3">Save as Raw (Pastebin Mode)</button>
+            </div>
         </div>
 
-        <div id="result-area" class="hidden hacker-card p-6 rounded-xl border-green-500/40">
-            <span class="text-[10px] font-bold text-green-500 uppercase">Copy to Delta Executor:</span>
-            <div class="mt-2 bg-black p-4 border border-green-900 rounded select-all">
-                <code id="loadstring-out" class="text-xs text-white break-all"></code>
+        <div id="output-area" class="hidden panel p-5 rounded-lg border-green-500/50 animate-pulse">
+            <span class="text-[10px] text-green-500 font-bold uppercase block mb-3">Generated Result</span>
+            
+            <textarea id="main-output" readonly class="w-full h-40 p-4 text-xs rounded mb-4"></textarea>
+            
+            <div class="grid grid-cols-3 gap-2">
+                <button onclick="copyText('main-output')" class="btn bg-gray-800 text-white py-2">Copy All</button>
+                <button onclick="downloadScript()" class="btn bg-gray-800 text-white py-2">Download .lua</button>
+                <button id="loadstring-btn" onclick="copyLoadstring()" class="btn bg-blue-600 text-white py-2">Copy Loadstring</button>
             </div>
-            <button onclick="copyLink()" class="w-full mt-3 py-2 text-xs bg-gray-900 border border-gray-700 rounded">Copy to Clipboard</button>
         </div>
+
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
         import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
-        // --- PASTE YOUR FIREBASE CONFIG HERE ---
         const firebaseConfig = {
             apiKey: "YOUR_API_KEY",
             authDomain: "your-project.firebaseapp.com",
@@ -62,64 +68,68 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        // 1. Check if we are viewing a RAW script for Delta
+        // --- HANDLE RAW VIEW FOR EXECUTORS ---
         const urlParams = new URLSearchParams(window.location.search);
-        const rawId = urlParams.get('raw');
-
+        const rawId = urlParams.get('v');
         if (rawId) {
-            document.body.innerHTML = "<pre>-- Loading from Lunix Cloud...</pre>";
             const docRef = doc(db, "scripts", rawId);
             const docSnap = await getDoc(docRef);
-
             if (docSnap.exists()) {
-                // Wipes everything and shows ONLY the code so Delta can read it
-                document.body.innerHTML = docSnap.data().content;
-                document.body.style.backgroundColor = "white";
-                document.body.style.color = "black";
-                document.body.style.padding = "0";
-            } else {
-                document.body.innerText = "-- Error: 404 (Script Not Found)";
+                document.body.innerHTML = `<pre style="white-space:pre-wrap; word-wrap:break-word;">${docSnap.data().content}</pre>`;
+                document.body.style.background = "white"; document.body.style.color = "black";
             }
         }
 
-        // 2. Upload Function
-        window.uploadScript = async () => {
-            const input = document.getElementById('script-input').value;
+        // --- FILE UPLOAD HANDLER ---
+        document.getElementById('fileInput').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            const reader = new FileReader();
+            reader.onload = (event) => document.getElementById('main-input').value = event.target.result;
+            reader.readAsText(file);
+        });
+
+        // --- PROCESS & SAVE ---
+        window.processScript = async (type) => {
+            const input = document.getElementById('main-input').value;
             if(!input) return alert("System: Input Empty");
 
-            const btn = document.getElementById('gen-btn');
-            btn.innerText = "UPLOADING TO CLOUD...";
-
-            // Simple Obfuscator (Bytecode injection)
-            const protectedCode = `loadstring("${input.split('').map(c => `\\${c.charCodeAt(0)}`).join('')}")()`;
-            
-            // Random 6-character ID
-            const id = Math.random().toString(36).substring(2, 8);
-
-            try {
-                await setDoc(doc(db, "scripts", id), {
-                    content: protectedCode,
-                    created: Date.now()
-                });
-
-                const rawLink = `${window.location.origin}${window.location.pathname}?raw=${id}`;
-                document.getElementById('loadstring-out').innerText = `loadstring(game:HttpGet("${rawLink}"))()`;
-                document.getElementById('result-area').classList.remove('hidden');
-                btn.innerText = "GENERATE DELTA LINK";
-                window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
-            } catch (e) {
-                console.error(e);
-                alert("Error! Did you set your Firebase Config?");
-                btn.innerText = "GENERATE DELTA LINK";
+            let finalCode = input;
+            if(type === 'obfuscate') {
+                finalCode = `-- Lunix Protected\nloadstring("${input.split('').map(c => `\\${c.charCodeAt(0)}`).join('')}")()`;
             }
+
+            const id = Math.random().toString(36).substring(2, 9);
+            await setDoc(doc(db, "scripts", id), { content: finalCode });
+
+            const loadstring = `loadstring(game:HttpGet("${window.location.origin}${window.location.pathname}?v=${id}"))()`;
+            
+            document.getElementById('main-output').value = finalCode;
+            window.currentLoadstring = loadstring;
+            document.getElementById('output-area').classList.remove('hidden');
+            window.scrollTo({top: document.body.scrollHeight, behavior: 'smooth'});
         };
 
-        window.copyLink = () => {
-            const text = document.getElementById('loadstring-out').innerText;
-            navigator.clipboard.writeText(text);
-            alert("COPIED");
+        // --- UTILS ---
+        window.copyText = (id) => {
+            const el = document.getElementById(id);
+            el.select();
+            navigator.clipboard.writeText(el.value);
+            alert("Copied Full Script!");
+        };
+
+        window.copyLoadstring = () => {
+            navigator.clipboard.writeText(window.currentLoadstring);
+            alert("Loadstring Copied for Delta!");
+        };
+
+        window.downloadScript = () => {
+            const text = document.getElementById('main-output').value;
+            const blob = new Blob([text], { type: "text/plain" });
+            const anchor = document.createElement("a");
+            anchor.download = "Lunix_Script.lua";
+            anchor.href = window.URL.createObjectURL(blob);
+            anchor.click();
         };
     </script>
 </body>
-  </html>
-  
+</html>
