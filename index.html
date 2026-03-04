@@ -321,7 +321,23 @@ input[type="file"]{padding:6px;cursor:pointer;font-family:'Rajdhani',sans-serif;
           </div>
           <div class="field"><label>Description</label><textarea id="upDesc" rows="3" placeholder="Describe features, how to use..."></textarea></div>
           <div class="field"><label>Banner Image (optional)</label><input type="file" id="upBanner" accept="image/*"></div>
-          <div class="field"><label>Lua Code</label><textarea id="upCode" rows="8" placeholder="-- paste script here..."></textarea></div>
+          <div class="field">
+            <label>Lua Script</label>
+            <div style="display:flex;gap:8px;margin-bottom:8px;">
+              <button class="btn btn-ghost btn-sm" id="pasteTabBtn" onclick="switchUploadTab('paste')" style="border-color:var(--accent);color:var(--accent);">PASTE CODE</button>
+              <button class="btn btn-ghost btn-sm" id="fileTabBtn" onclick="switchUploadTab('file')">UPLOAD FILE</button>
+            </div>
+            <div id="pasteTab"><textarea id="upCode" rows="8" placeholder="-- paste your lua script here..."></textarea></div>
+            <div id="fileTab" style="display:none;">
+              <div style="border:1px dashed var(--border);border-radius:6px;padding:20px;text-align:center;background:var(--bg2);">
+                <div style="font-size:24px;margin-bottom:8px;">📂</div>
+                <div style="font-size:12px;color:var(--text2);margin-bottom:10px;">.lua files only</div>
+                <input type="file" id="upFile" accept=".lua" onchange="loadLuaFile(this)" style="display:none;">
+                <button class="btn btn-ghost btn-sm" onclick="document.getElementById('upFile').click()">CHOOSE FILE</button>
+                <div id="fileLabel" style="font-size:11px;color:var(--accent3);margin-top:8px;display:none;"></div>
+              </div>
+            </div>
+          </div>
           <div class="btn-row">
             <button class="btn btn-primary" onclick="uploadScript()">⬆ SUBMIT</button>
             <button class="btn btn-ghost" onclick="toggleUploadForm()">CANCEL</button>
@@ -518,19 +534,6 @@ input[type="file"]{padding:6px;cursor:pointer;font-family:'Rajdhani',sans-serif;
   </div>
 </div>
 
-<!-- LOADSTRING POPUP -->
-<div class="gpopup-overlay" id="lsPopup" onclick="if(event.target===this)this.classList.remove('open')">
-  <div class="gpopup-box">
-    <div class="gpopup-title">⬡ LOADSTRING</div>
-    <div style="font-size:10px;color:var(--text2);margin-bottom:6px;">DELTA EXECUTOR COMMAND</div>
-    <div class="code-box" id="lsText"></div>
-    <div style="font-size:10px;color:var(--text2);margin-top:8px;">Upload the .lua file to GitHub to activate.</div>
-    <div class="btn-row">
-      <button class="btn btn-primary" onclick="navigator.clipboard.writeText(document.getElementById('lsText').textContent);toast('✓ Copied','var(--accent3)')">COPY</button>
-      <button class="btn btn-ghost" onclick="document.getElementById('lsPopup').classList.remove('open')">CLOSE</button>
-    </div>
-  </div>
-</div>
 
 <!-- Firebase -->
 <script type="module">
@@ -695,8 +698,7 @@ async function openSD(id){
   document.getElementById('sdDesc').textContent=s.desc||'No description.';
   const canDel=isOwner||(window._user&&s.uploaderUid===window._user.uid);
   document.getElementById('sdActs').innerHTML=`
-    <button class="btn btn-primary btn-sm" onclick="showLS('${id}')">⬡ LOADSTRING</button>
-    <button class="btn btn-green btn-sm" onclick="copyRaw('${id}')">COPY RAW</button>
+    <button class="btn btn-primary btn-sm" onclick="copyRaw('${id}')">COPY RAW</button>
     ${canDel?`<button class="btn btn-danger btn-sm" onclick="delScript('${id}');closeSD()">DELETE</button>`:''}`;
   await loadComments(id);
   if(isGuest){document.getElementById('commentInputArea').style.display='none';document.getElementById('commentGuestMsg').style.display='block';}
@@ -773,6 +775,29 @@ async function toggleLike(scriptId,cmtId,btn){
 }
 
 // ── UPLOAD ──
+function switchUploadTab(tab){
+  const isPaste = tab === 'paste';
+  document.getElementById('pasteTab').style.display = isPaste ? 'block' : 'none';
+  document.getElementById('fileTab').style.display = isPaste ? 'none' : 'block';
+  document.getElementById('pasteTabBtn').style.borderColor = isPaste ? 'var(--accent)' : 'var(--border)';
+  document.getElementById('pasteTabBtn').style.color = isPaste ? 'var(--accent)' : 'var(--text2)';
+  document.getElementById('fileTabBtn').style.borderColor = isPaste ? 'var(--border)' : 'var(--accent)';
+  document.getElementById('fileTabBtn').style.color = isPaste ? 'var(--text2)' : 'var(--accent)';
+}
+function loadLuaFile(input){
+  const file = input.files[0];
+  if(!file) return;
+  if(!file.name.endsWith('.lua')){toast('Only .lua files allowed','var(--red)');input.value='';return;}
+  if(file.size > 500*1024){toast('File too large (max 500KB)','var(--red)');input.value='';return;}
+  const reader = new FileReader();
+  reader.onload = e => {
+    document.getElementById('upCode').value = e.target.result;
+    document.getElementById('fileLabel').textContent = '✓ ' + file.name;
+    document.getElementById('fileLabel').style.display = 'block';
+    toast('✓ File loaded','var(--accent3)');
+  };
+  reader.readAsText(file);
+}
 function toggleUploadForm(){
   const w=document.getElementById('uploadFormWrap');const showing=w.style.display!=='none';w.style.display=showing?'none':'block';
   if(!showing){
@@ -802,11 +827,7 @@ async function delScript(id){
   try{await window._deleteDoc(window._doc(window._db,'scripts',id));toast('✓ Deleted','var(--accent3)');await loadAll();if(isOwner)renderManage();}
   catch(e){toast('✗ Failed','var(--red)');}
 }
-function showLS(id){
-  const s=scripts.find(x=>x.id===id);if(!s)return;
-  document.getElementById('lsText').textContent=`loadstring(game:HttpGet("https://raw.githubusercontent.com/${REPO}/main/${s.name.replace(/\s+/g,'_')}.lua",true))()`;
-  document.getElementById('lsPopup').classList.add('open');
-}
+
 function copyRaw(id){const s=scripts.find(x=>x.id===id);if(!s){toast('Not found','var(--red)');return;}navigator.clipboard.writeText(s.code||'').then(()=>toast('✓ Raw copied','var(--accent3)'));}
 
 // ── OWNER ──
