@@ -176,19 +176,7 @@ input[type="file"]{padding:6px;cursor:pointer;font-family:'Rajdhani',sans-serif;
 .reply-input-wrap.open{display:flex;gap:6px;align-items:flex-end;}
 .reply-input-wrap textarea{flex:1;min-height:36px;font-size:12px;resize:none;}
 
-/* CHANGELOG */
-.cl-entry{background:var(--bg2);border:1px solid var(--border2);border-radius:10px;overflow:hidden;margin-bottom:14px;position:relative;}
-.cl-entry::before{content:'';position:absolute;top:0;left:0;width:2px;height:100%;background:linear-gradient(180deg,var(--accent),var(--accent2));}
-.cl-header{padding:14px 16px 8px 20px;display:flex;align-items:flex-start;justify-content:space-between;gap:10px;}
-.cl-version{font-family:'Orbitron',monospace;font-size:12px;font-weight:700;color:var(--accent);}
-.cl-title{font-size:14px;font-weight:700;color:var(--text);margin-top:2px;}
-.cl-date{font-size:10px;color:var(--text3);letter-spacing:1px;flex-shrink:0;margin-top:4px;}
-.cl-body{padding:0 16px 14px 20px;font-size:13px;color:var(--text2);line-height:1.8;white-space:pre-wrap;}
-.cl-tags{padding:0 16px 14px 20px;display:flex;flex-wrap:wrap;gap:4px;}
-.cl-tag{display:inline-block;padding:2px 8px;border-radius:3px;font-size:9px;letter-spacing:1px;font-weight:700;text-transform:uppercase;}
-.cl-tag-new{background:rgba(0,255,136,0.1);color:var(--accent3);}
-.cl-tag-fix{background:rgba(0,212,255,0.1);color:var(--accent);}
-.cl-tag-update{background:rgba(255,215,0,0.1);color:var(--yellow);}
+
 ::-webkit-scrollbar{width:4px;}
 ::-webkit-scrollbar-track{background:var(--bg);}
 ::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px;}
@@ -250,7 +238,7 @@ input[type="file"]{padding:6px;cursor:pointer;font-family:'Rajdhani',sans-serif;
     <button class="nav-btn active" id="nb-home" onclick="go('home')">Home</button>
     <button class="nav-btn" id="nb-scripts" onclick="go('scripts')">Scripts</button>
     <button class="nav-btn" id="nb-obf" onclick="go('obf')">Obfuscator</button>
-    <button class="nav-btn" id="nb-changelog" onclick="go('changelog')">Updates</button>
+    <button class="nav-btn" id="nb-info" onclick="go('info')">Info</button>
     <button class="nav-btn" id="nb-profile" onclick="go('profile')">Profile</button>
     <button class="nav-btn" id="nb-owner" style="display:none;" onclick="go('owner')">Owner</button>
   </nav>
@@ -364,15 +352,38 @@ input[type="file"]{padding:6px;cursor:pointer;font-family:'Rajdhani',sans-serif;
   </div>
 </div>
 
-<!-- CHANGELOG -->
-<div class="tab" id="tab-changelog">
+<!-- INFO -->
+<div class="tab" id="tab-info">
   <div class="panel">
-    <div class="ph">
-      <div class="pt">Update Log</div>
-      <span class="badge b-green">LIVE</span>
-    </div>
-    <div class="pb">
-      <div id="changelogList"><div class="empty"><div class="empty-ico">⬡</div><p>No updates posted yet</p></div></div>
+    <div class="ph"><div class="pt">About Lunix</div></div>
+    <div class="pb" style="font-size:13px;color:var(--text2);line-height:2;">
+      <div style="font-family:'Orbitron',monospace;font-size:22px;font-weight:900;color:var(--accent);letter-spacing:6px;text-shadow:0 0 20px rgba(0,212,255,0.3);margin-bottom:16px;">LUNIX</div>
+      <div style="margin-bottom:20px;font-size:13px;color:var(--text2);line-height:1.9;">
+        Lunix is a free Roblox script hub built for the community. The goal was simple — make one clean place where people can find scripts, share their own, and not have to dig through sketchy sites or random Discord servers.
+      </div>
+      <div class="div"></div>
+      <div style="margin-bottom:14px;">
+        <div style="font-size:10px;letter-spacing:3px;color:var(--accent);text-transform:uppercase;margin-bottom:8px;font-family:'Orbitron',monospace;">Built by</div>
+        <div style="font-size:15px;font-weight:700;color:var(--text);">yuki</div>
+        <div style="font-size:12px;color:var(--text2);margin-top:2px;">Discord: <span style="color:var(--accent2);">y4zr</span></div>
+      </div>
+      <div class="div"></div>
+      <div style="margin-bottom:14px;">
+        <div style="font-size:10px;letter-spacing:3px;color:var(--accent);text-transform:uppercase;margin-bottom:10px;font-family:'Orbitron',monospace;">What Lunix offers</div>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <div style="display:flex;align-items:center;gap:10px;"><span style="color:var(--accent3);font-size:14px;">⬡</span><span>Browse and upload Roblox Lua scripts</span></div>
+          <div style="display:flex;align-items:center;gap:10px;"><span style="color:var(--accent3);font-size:14px;">⬡</span><span>One tap loadstring for Delta and other executors</span></div>
+          <div style="display:flex;align-items:center;gap:10px;"><span style="color:var(--accent3);font-size:14px;">⬡</span><span>Built in Lua obfuscator — Light, Medium and Max</span></div>
+          <div style="display:flex;align-items:center;gap:10px;"><span style="color:var(--accent3);font-size:14px;">⬡</span><span>User profiles, comments and script ratings</span></div>
+          <div style="display:flex;align-items:center;gap:10px;"><span style="color:var(--accent3);font-size:14px;">⬡</span><span>Fully free, no ads, no paywalls</span></div>
+        </div>
+      </div>
+      <div class="div"></div>
+      <div>
+        <div style="font-size:10px;letter-spacing:3px;color:var(--accent);text-transform:uppercase;margin-bottom:8px;font-family:'Orbitron',monospace;">Version</div>
+        <div style="font-size:13px;color:var(--text);">Lunix <span style="color:var(--accent);">v2.1</span> — 2026</div>
+        <div style="font-size:11px;color:var(--text3);margin-top:4px;">Built with Firebase · Hosted on GitHub Pages</div>
+      </div>
     </div>
   </div>
 </div>
@@ -444,16 +455,6 @@ input[type="file"]{padding:6px;cursor:pointer;font-family:'Rajdhani',sans-serif;
       <div class="pb">
         <div class="field"><label>Message (empty to hide)</label><input type="text" id="announceInput" placeholder="e.g. New scripts dropped!"></div>
         <div class="btn-row"><button class="btn btn-primary" onclick="saveAnnounce()">SAVE & PUBLISH</button></div>
-      </div>
-    </div>
-    <div class="panel">
-      <div class="ph"><div class="pt">Post Update</div></div>
-      <div class="pb">
-        <div class="field"><label>Version</label><input type="text" id="clVersion" placeholder="e.g. v2.1"></div>
-        <div class="field"><label>Title</label><input type="text" id="clTitle" placeholder="e.g. Comments + Banners added"></div>
-        <div class="field"><label>Description</label><textarea id="clBody" rows="4" placeholder="What changed..."></textarea></div>
-        <div class="field"><label>Tags (comma separated)</label><input type="text" id="clTags" placeholder="NEW, FIX, UPDATE"></div>
-        <div class="btn-row"><button class="btn btn-primary" onclick="postChangelog()">POST UPDATE</button></div>
       </div>
     </div>
     <div class="panel">
@@ -547,7 +548,7 @@ let isGuest=false,promptDismissed=false,currentScriptId=null;
 function showAsGuest(){
   isGuest=true;document.getElementById('authPage').style.display='none';document.getElementById('app').style.display='block';
   document.getElementById('hdrName').textContent='Guest';document.getElementById('guestProfileMsg').style.display='block';
-  document.getElementById('userProfile').style.display='none';loadAll();loadAnnouncement();loadChangelog();
+  document.getElementById('userProfile').style.display='none';loadAll();loadAnnouncement();
   setTimeout(()=>{if(isGuest&&!promptDismissed)document.getElementById('loginPrompt').style.display='flex';},120000);
 }
 function dismissPrompt(){promptDismissed=true;document.getElementById('loginPrompt').style.display='none';}
@@ -591,7 +592,7 @@ async function startApp(){
   document.getElementById('hdrName').textContent=myProfile.username;
   document.getElementById('guestProfileMsg').style.display='none';document.getElementById('userProfile').style.display='block';
   if(window._user.email===OWNER_EMAIL){document.getElementById('nb-owner').style.display='block';document.getElementById('ownerBadge').style.display='inline-flex';}
-  await loadAll();renderProfile();loadAnnouncement();loadChangelog();
+  await loadAll();renderProfile();loadAnnouncement();
 }
 
 // ── TABS ──
@@ -826,49 +827,6 @@ async function changeUsername(){
   if(taken){msg.style.color='var(--red)';msg.textContent='Username already taken';return;}
   try{await window._updateDoc(window._doc(window._db,'users',window._user.uid),{username:newU,lastUsernameChange:window._serverTimestamp()});myProfile={...myProfile,username:newU};document.getElementById('hdrName').textContent=newU;document.getElementById('newUsername').value='';renderProfile();msg.style.color='var(--accent3)';msg.textContent='✓ Changed!';toast('✓ Updated','var(--accent3)');}
   catch(e){msg.style.color='var(--red)';msg.textContent='Error: '+e.message;}
-}
-
-// ══════════════════════════════════════
-// CHANGELOG
-// ══════════════════════════════════════
-async function loadChangelog(){
-  const el=document.getElementById('changelogList');
-  try{
-    const q=window._query(window._col(window._db,'changelog'),window._orderBy('createdAt','desc'));
-    const snap=await window._getDocs(q);
-    if(snap.empty){el.innerHTML='<div class="empty"><div class="empty-ico">⬡</div><p>No updates yet</p></div>';return;}
-    el.innerHTML='';
-    snap.forEach(d=>{
-      const e={id:d.id,...d.data()};
-      const div=document.createElement('div');div.className='cl-entry';
-      const date=e.createdAt?.toDate?e.createdAt.toDate().toLocaleDateString('en',{month:'short',day:'numeric',year:'numeric'}):'';
-      const tags=(e.tags||[]).map(t=>`<span class="cl-tag cl-tag-${t.toLowerCase()}">${esc(t)}</span>`).join('');
-      div.innerHTML=`<div class="cl-header"><div><div class="cl-version">${esc(e.version||'')}</div><div class="cl-title">${esc(e.title||'')}</div></div><div class="cl-date">${date}</div></div>${tags?`<div class="cl-tags">${tags}</div>`:''}<div class="cl-body">${esc(e.body||'')}</div>`;
-      el.appendChild(div);
-    });
-  }catch(err){el.innerHTML='<div class="empty"><div class="empty-ico">⬡</div><p>Failed to load</p></div>';}
-}
-
-async function postChangelog(){
-  const version=document.getElementById('clVersion').value.trim();
-  const title=document.getElementById('clTitle').value.trim();
-  const body=document.getElementById('clBody').value.trim();
-  const tagsRaw=document.getElementById('clTags').value.trim();
-  if(!version||!title||!body){toast('Fill in all fields','var(--red)');return;}
-  const tags=tagsRaw?tagsRaw.split(',').map(t=>t.trim()).filter(Boolean):[];
-  try{
-    await window._addDoc(window._col(window._db,'changelog'),{version,title,body,tags,createdAt:window._serverTimestamp()});
-    ['clVersion','clTitle','clBody','clTags'].forEach(i=>document.getElementById(i).value='');
-    toast('✓ Update posted','var(--accent3)');loadChangelog();
-  }catch(e){toast('Error: '+e.message,'var(--red)');}
-}
-
-async function deleteChangelog(id){
-  if(!confirm('Delete this entry?'))return;
-  try{
-    await window._deleteDoc(window._doc(window._db,'changelog',id));
-    toast('✓ Deleted','var(--accent3)');loadChangelog();
-  }catch(e){toast('Error','var(--red)');}
 }
 
 // ── OBF ──
