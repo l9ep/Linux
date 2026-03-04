@@ -511,6 +511,18 @@ input[type="file"]{padding:6px;cursor:pointer;font-family:'Rajdhani',sans-serif;
       <div class="sd-desc" id="sdDesc"></div>
       <div class="sd-acts" id="sdActs"></div>
       <div class="sd-div"></div>
+      <div style="margin-bottom:20px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;flex-wrap:wrap;gap:6px;">
+          <div style="font-family:'Orbitron',monospace;font-size:10px;letter-spacing:3px;color:var(--accent);">RAW CODE</div>
+          <div style="display:flex;gap:6px;">
+            <button class="btn btn-ghost btn-sm" onclick="copyRawSD()">COPY</button>
+            <button class="btn btn-ghost btn-sm" onclick="downloadRawSD()">DOWNLOAD</button>
+            <button class="btn btn-ghost btn-sm" onclick="copyLinkSD()">COPY LINK</button>
+          </div>
+        </div>
+        <div id="sdRawCode" style="background:var(--bg);border:1px solid var(--border);border-left:2px solid var(--accent2);border-radius:6px;padding:12px 14px;font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--accent3);max-height:220px;overflow-y:auto;white-space:pre-wrap;word-break:break-all;line-height:1.6;"></div>
+      </div>
+      <div class="sd-div"></div>
       <div class="comments-title">💬 COMMENTS</div>
       <div id="commentsList"></div>
       <div id="commentInputArea">
@@ -696,6 +708,7 @@ async function openSD(id){
   const by=s.uploaderName?`<span style="font-size:12px;color:var(--text2);">by <b style="color:var(--accent)">${esc(s.uploaderName)}</b></span>`:'';
   document.getElementById('sdMeta').innerHTML=gt+' '+by;
   document.getElementById('sdDesc').textContent=s.desc||'No description.';
+  document.getElementById('sdRawCode').textContent=s.code||'-- no code';
   const canDel=isOwner||(window._user&&s.uploaderUid===window._user.uid);
   document.getElementById('sdActs').innerHTML=`
     <button class="btn btn-primary btn-sm" onclick="copyRaw('${id}')">COPY RAW</button>
@@ -828,6 +841,22 @@ async function delScript(id){
   catch(e){toast('✗ Failed','var(--red)');}
 }
 
+function copyRawSD(){
+  const code = document.getElementById('sdRawCode').textContent;
+  navigator.clipboard.writeText(code).then(()=>toast('✓ Code copied','var(--accent3)'));
+}
+function downloadRawSD(){
+  const s = scripts.find(x=>x.id===currentScriptId); if(!s) return;
+  const blob = new Blob([s.code||''], {type:'text/plain'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = (s.name||'script').replace(/\s+/g,'_') + '.lua';
+  a.click(); toast('✓ Downloading','var(--accent3)');
+}
+function copyLinkSD(){
+  const url = window.location.href.split('?')[0] + '?script=' + currentScriptId;
+  navigator.clipboard.writeText(url).then(()=>toast('✓ Link copied','var(--accent2)'));
+}
 function copyRaw(id){const s=scripts.find(x=>x.id===id);if(!s){toast('Not found','var(--red)');return;}navigator.clipboard.writeText(s.code||'').then(()=>toast('✓ Raw copied','var(--accent3)'));}
 
 // ── OWNER ──
