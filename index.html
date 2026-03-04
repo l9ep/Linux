@@ -180,6 +180,10 @@ input[type="file"]{padding:6px;cursor:pointer;font-family:'Rajdhani',sans-serif;
 /* ANNOUNCE */
 .announce-bar{background:linear-gradient(90deg,rgba(0,212,255,0.07),rgba(0,255,136,0.04));border:1px solid rgba(0,212,255,0.14);border-radius:8px;padding:12px 16px;margin-bottom:16px;display:flex;align-items:center;gap:12px;}
 
+.game-tag{display:inline-block;padding:4px 10px;background:rgba(0,212,255,0.06);border:1px solid var(--border);border-radius:4px;font-size:11px;color:var(--text2);cursor:pointer;transition:all 0.15s;-webkit-tap-highlight-color:transparent;}
+.game-tag:hover,.game-tag.active{border-color:var(--accent);color:var(--accent);background:rgba(0,212,255,0.1);}
+/* VERIFIED */
+.verified-badge{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;background:rgba(0,255,136,0.1);border:1px solid rgba(0,255,136,0.25);border-radius:3px;font-size:9px;letter-spacing:1px;font-weight:700;color:var(--accent3);text-transform:uppercase;}
 /* INFO TAB */
 .info-row{display:flex;align-items:flex-start;gap:12px;padding:12px 0;border-bottom:1px solid var(--border2);}
 .info-row:last-child{border-bottom:none;}
@@ -221,7 +225,7 @@ input[type="file"]{padding:6px;cursor:pointer;font-family:'Rajdhani',sans-serif;
 <div id="loadScreen">
   <div class="load-logo">LUNIX</div>
   <div class="load-bar"><div class="load-fill"></div></div>
-  <div class="load-sub">Script Hub by yuki</div>
+  <div class="load-sub">The community's script hub.</div>
 </div>
 
 <!-- LOGIN PROMPT -->
@@ -316,8 +320,21 @@ input[type="file"]{padding:6px;cursor:pointer;font-family:'Rajdhani',sans-serif;
         <div id="uploadAuthWarn" style="display:none;padding:10px;background:rgba(255,215,0,0.06);border:1px solid rgba(255,215,0,0.2);border-radius:6px;font-size:11px;color:var(--yellow);margin-bottom:12px;">⚠ <span style="cursor:pointer;text-decoration:underline;" onclick="openAuth()">Sign in</span> to upload.</div>
         <div id="uploadFormFields">
           <div class="field"><label>Script Name</label><input type="text" id="upName" placeholder="e.g. Universal ESP"></div>
-          <div class="field"><label>Game</label>
-            <select id="upGame"><option value="">Select game...</option><option>Da Hood</option><option>Prison Life</option><option>Blox Fruits</option><option>Arsenal</option><option>Universal</option><option>Other</option></select>
+          <div class="field">
+            <label>Game</label>
+            <input type="text" id="upGame" placeholder="Type any game name or pick below..." autocomplete="off" oninput="filterGameSugg(this.value)">
+            <div id="gameSugg" style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;">
+              <span class="game-tag" onclick="pickGame('Da Hood')">Da Hood</span>
+              <span class="game-tag" onclick="pickGame('Blox Fruits')">Blox Fruits</span>
+              <span class="game-tag" onclick="pickGame('Prison Life')">Prison Life</span>
+              <span class="game-tag" onclick="pickGame('Arsenal')">Arsenal</span>
+              <span class="game-tag" onclick="pickGame('Brookhaven')">Brookhaven</span>
+              <span class="game-tag" onclick="pickGame('Adopt Me')">Adopt Me</span>
+              <span class="game-tag" onclick="pickGame('Pet Simulator')">Pet Simulator</span>
+              <span class="game-tag" onclick="pickGame('Murder Mystery 2')">Murder Mystery 2</span>
+              <span class="game-tag" onclick="pickGame('Jailbreak')">Jailbreak</span>
+              <span class="game-tag" onclick="pickGame('Universal')">Universal</span>
+            </div>
           </div>
           <div class="field"><label>Description</label><textarea id="upDesc" rows="3" placeholder="Describe features, how to use..."></textarea></div>
           <div class="field"><label>Banner Image (optional)</label><input type="file" id="upBanner" accept="image/*"></div>
@@ -347,7 +364,12 @@ input[type="file"]{padding:6px;cursor:pointer;font-family:'Rajdhani',sans-serif;
       </div>
       <div class="search-row">
         <input type="text" id="searchInput" placeholder="Search scripts..." oninput="filterScripts()">
-        <select id="filterGame" onchange="filterScripts()" style="width:auto;"><option value="">All Games</option><option>Da Hood</option><option>Prison Life</option><option>Blox Fruits</option><option>Arsenal</option><option>Universal</option></select>
+        <select id="filterGame" onchange="filterScripts()" style="width:auto;min-width:120px;">
+          <option value="">All Games</option>
+          <option>Da Hood</option><option>Blox Fruits</option><option>Prison Life</option>
+          <option>Arsenal</option><option>Brookhaven</option><option>Adopt Me</option>
+          <option>Pet Simulator</option><option>Murder Mystery 2</option><option>Jailbreak</option><option>Universal</option>
+        </select>
       </div>
       <div id="scriptList" class="grid"><div class="empty"><div class="empty-ico">⬡</div><p>Loading...</p></div></div>
     </div>
@@ -408,10 +430,7 @@ input[type="file"]{padding:6px;cursor:pointer;font-family:'Rajdhani',sans-serif;
         <div class="info-icon">🎯</div>
         <div><div class="info-label">Purpose</div><div class="info-val">Free script hub for Roblox players</div><div style="font-size:12px;color:var(--text2);margin-top:2px;">No ads. No paywalls. No sketchy downloads.</div></div>
       </div>
-      <div class="info-row">
-        <div class="info-icon">⚙</div>
-        <div><div class="info-label">Stack</div><div class="info-val">HTML · Firebase · GitHub Pages</div><div style="font-size:12px;color:var(--text2);margin-top:2px;">No frameworks. Built from scratch.</div></div>
-      </div>
+
       <div class="info-row">
         <div class="info-icon">⬡</div>
         <div><div class="info-label">Version</div><div class="info-val" style="color:var(--accent);">Lunix v2.1 — 2026</div></div>
@@ -512,15 +531,7 @@ input[type="file"]{padding:6px;cursor:pointer;font-family:'Rajdhani',sans-serif;
       <div class="sd-acts" id="sdActs"></div>
       <div class="sd-div"></div>
       <div style="margin-bottom:20px;">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;flex-wrap:wrap;gap:6px;">
-          <div style="font-family:'Orbitron',monospace;font-size:10px;letter-spacing:3px;color:var(--accent);">RAW CODE</div>
-          <div style="display:flex;gap:6px;">
-            <button class="btn btn-ghost btn-sm" onclick="copyRawSD()">COPY</button>
-            <button class="btn btn-ghost btn-sm" onclick="downloadRawSD()">DOWNLOAD</button>
-            <button class="btn btn-ghost btn-sm" onclick="openRawTab()">OPEN RAW</button>
-            <button class="btn btn-ghost btn-sm" onclick="copyLinkSD()">COPY LINK</button>
-          </div>
-        </div>
+        <div style="margin-bottom:8px;font-family:'Orbitron',monospace;font-size:10px;letter-spacing:3px;color:var(--accent);">RAW CODE</div>
         <div id="sdRawCode" style="background:var(--bg);border:1px solid var(--border);border-left:2px solid var(--accent2);border-radius:6px;padding:12px 14px;font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--accent3);max-height:220px;overflow-y:auto;white-space:pre-wrap;word-break:break-all;line-height:1.6;"></div>
       </div>
       <div class="sd-div"></div>
@@ -690,11 +701,11 @@ function mkCard(s,manage){
   if(s.banner){const img=document.createElement('img');img.className='scard-banner';img.src=s.banner;img.alt='';img.onerror=()=>img.remove();c.appendChild(img);}
   else{const ph=document.createElement('div');ph.className='scard-banner-ph';ph.textContent='⬡';c.appendChild(ph);}
   const body=document.createElement('div');body.className='scard-body';
-  const gt=s.game?`<span class="badge b-blue">${esc(s.game)}</span>`:'';
+  const gt=s.game?`<span class="badge b-blue">${esc(s.game)}</span>`:'';const vb=s.verified?`<span class="verified-badge">✓ Verified</span>`:'';
   const by=s.uploaderName?`<span style="font-size:10px;color:var(--text3);"> by ${esc(s.uploaderName)}</span>`:'';
   const canDel=isOwner||(window._user&&s.uploaderUid===window._user.uid);
-  const manageActs=`<div class="btn-row" style="margin-top:8px;" onclick="event.stopPropagation()"><button class="btn btn-danger btn-sm" onclick="delScript('${s.id}')">DELETE</button><button class="btn btn-ghost btn-sm" onclick="copyRaw('${s.id}')">RAW</button></div>`;
-  body.innerHTML=`<div class="scard-name">${esc(s.name||'Unnamed')}</div><div class="scard-meta">${gt}${by}</div><div class="scard-desc">${esc(s.desc||'No description')}</div>${manage?manageActs:''}`;
+  const manageActs=`<div class="btn-row" style="margin-top:8px;" onclick="event.stopPropagation()"><button class="btn btn-danger btn-sm" onclick="delScript('${s.id}')">DELETE</button><button class="btn btn-ghost btn-sm" onclick="copyRaw('${s.id}')">RAW</button>${isOwner?`<button class="btn btn-green btn-sm" onclick="toggleVerify('${s.id}','${s.verified}')">${ s.verified?'UNVERIFY':'VERIFY'}</button>`:''}</div>`;
+  body.innerHTML=`<div class="scard-name">${esc(s.name||'Unnamed')} ${vb}</div><div class="scard-meta">${gt}${by}</div><div class="scard-desc">${esc(s.desc||'No description')}</div>${manage?manageActs:''}`;
   c.appendChild(body);return c;
 }
 
@@ -704,15 +715,18 @@ async function openSD(id){
   currentScriptId=id;
   if(s.banner)document.getElementById('sdBannerWrap').innerHTML=`<img src="${esc(s.banner)}" class="sd-banner" onerror="this.remove()">`;
   else document.getElementById('sdBannerWrap').innerHTML=`<div class="sd-banner-ph">⬡</div>`;
-  document.getElementById('sdTitle').textContent=s.name||'Unnamed';
-  const gt=s.game?`<span class="badge b-blue">${esc(s.game)}</span>`:'';
+  document.getElementById('sdTitle').innerHTML=esc(s.name||'Unnamed')+(s.verified?' <span class="verified-badge">✓ Verified</span>':'');
+  const gt=s.game?`<span class="badge b-blue">${esc(s.game)}</span>`:'';const vb=s.verified?`<span class="verified-badge">✓ Verified</span>`:'';
   const by=s.uploaderName?`<span style="font-size:12px;color:var(--text2);">by <b style="color:var(--accent)">${esc(s.uploaderName)}</b></span>`:'';
   document.getElementById('sdMeta').innerHTML=gt+' '+by;
   document.getElementById('sdDesc').textContent=s.desc||'No description.';
   document.getElementById('sdRawCode').textContent=s.code||'-- no code';
   const canDel=isOwner||(window._user&&s.uploaderUid===window._user.uid);
   document.getElementById('sdActs').innerHTML=`
-    <button class="btn btn-primary btn-sm" onclick="copyRaw('${id}')">COPY RAW</button>
+    <button class="btn btn-green btn-sm" onclick="copyRawSD()">⬡ COPY RAW</button>
+    <button class="btn btn-ghost btn-sm" onclick="downloadRawSD()">DOWNLOAD</button>
+    <button class="btn btn-ghost btn-sm" onclick="openRawTab()">OPEN RAW</button>
+    <button class="btn btn-ghost btn-sm" onclick="copyLinkSD()">COPY LINK</button>
     ${canDel?`<button class="btn btn-danger btn-sm" onclick="delScript('${id}');closeSD()">DELETE</button>`:''}`;
   await loadComments(id);
   if(isGuest){document.getElementById('commentInputArea').style.display='none';document.getElementById('commentGuestMsg').style.display='block';}
@@ -812,6 +826,15 @@ function loadLuaFile(input){
   };
   reader.readAsText(file);
 }
+function pickGame(name){
+  document.getElementById('upGame').value=name;
+  document.querySelectorAll('.game-tag').forEach(t=>t.classList.toggle('active', t.textContent===name));
+}
+function filterGameSugg(val){
+  document.querySelectorAll('.game-tag').forEach(t=>{
+    t.style.display = !val || t.textContent.toLowerCase().includes(val.toLowerCase()) ? 'inline-block' : 'none';
+  });
+}
 function toggleUploadForm(){
   const w=document.getElementById('uploadFormWrap');const showing=w.style.display!=='none';w.style.display=showing?'none':'block';
   if(!showing){
@@ -823,6 +846,13 @@ async function uploadScript(){
   if(isGuest){toast('Sign in to upload','var(--yellow)');return;}
   const name=document.getElementById('upName').value.trim(),game=document.getElementById('upGame').value,desc=document.getElementById('upDesc').value.trim(),code=document.getElementById('upCode').value.trim();
   if(!name||!code){toast('Name + code required','var(--red)');return;}
+  // Validate: must be lua code or loadstring, not random text
+  const isLoadstring = /loadstring\s*\(/.test(code) || /HttpGet/.test(code) || /https?:\/\//i.test(code.trim());
+  const isLuaCode = /^\s*(--|local |function |game\.|workspace\.|script\.|if |for |while |repeat |return |print\(|require\(|_G\.|pcall|task\.|Instance\.new)/.test(code) || code.trim().startsWith('--');
+  const hasLuaSyntax = (code.match(/end|then|do|function|local|game|workspace/g)||[]).length >= 1;
+  if(!isLoadstring && !isLuaCode && !hasLuaSyntax){
+    toast('Must be Lua code or a loadstring — no random text','var(--red)');return;
+  }
   const msg=document.getElementById('upMsg');msg.style.display='block';msg.style.color='var(--text2)';msg.textContent='Uploading...';
   let bannerData='';
   const bf=document.getElementById('upBanner').files[0];
@@ -833,6 +863,14 @@ async function uploadScript(){
     ['upName','upDesc','upCode'].forEach(i=>document.getElementById(i).value='');document.getElementById('upGame').value='';document.getElementById('upBanner').value='';
     await loadAll();toast('✓ Script uploaded','var(--accent3)');setTimeout(()=>{document.getElementById('uploadFormWrap').style.display='none';},1500);
   }catch(e){msg.style.color='var(--red)';msg.textContent='✗ '+e.message;}
+}
+async function toggleVerify(id, currently){
+  try{
+    await window._updateDoc(window._doc(window._db,'scripts',id),{verified: currently==='true'||currently===true ? false : true});
+    toast(currently==='true'||currently===true ? '✓ Unverified' : '✓ Verified','var(--accent3)');
+    await loadAll();
+    if(isOwner) renderManage();
+  }catch(e){toast('Error','var(--red)');}
 }
 async function delScript(id){
   const s=scripts.find(x=>x.id===id);if(!s)return;
