@@ -882,10 +882,9 @@ async function delScript(id){
 
 function openRawTab(){
   const s = scripts.find(x=>x.id===currentScriptId); if(!s) return;
-  const code = s.code || '-- no code';
-  const name = s.name || 'script';
-  const html = `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>${name} — Raw</title><style>*{margin:0;padding:0;box-sizing:border-box;}body{background:#04060a;color:#00ff88;font-family:'Courier New',monospace;font-size:13px;line-height:1.7;padding:20px;}pre{white-space:pre-wrap;word-break:break-all;}.top{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid #0c1a28;}.title{color:#00d4ff;font-size:14px;letter-spacing:2px;}.copy-btn{background:rgba(0,212,255,0.1);border:1px solid rgba(0,212,255,0.3);color:#00d4ff;padding:6px 14px;border-radius:4px;cursor:pointer;font-family:inherit;font-size:11px;letter-spacing:2px;}.copy-btn:hover{background:rgba(0,212,255,0.2);}</style></head><body><div class="top"><div class="title">-- ${name}.lua</div><button class="copy-btn" onclick="navigator.clipboard.writeText(document.querySelector('pre').textContent).then(()=>this.textContent='COPIED!')">COPY</button></div><pre>${code.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</pre></body></html>`;
-  const blob = new Blob([html], {type:'text/html'});
+  const code = s.code || '';
+  const rawHtml = `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>${s.name||'script'}.lua</title><style>body{margin:0;padding:0;background:#fff;color:#24292f;font-family:'SFMono-Regular',Consolas,'Liberation Mono',Menlo,monospace;font-size:13px;line-height:1.6;}pre{padding:16px;white-space:pre-wrap;word-break:break-all;}</style></head><body><pre>${code.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</pre></body></html>`;
+  const blob = new Blob([rawHtml], {type:'text/html'});
   window.open(URL.createObjectURL(blob), '_blank');
 }
 function copyRawSD(){
@@ -950,13 +949,66 @@ const DESCS={light:'Light — Variable renaming + string byte encoding',medium:'
 function setLvl(l,el){obfLevel=l;document.querySelectorAll('.obf-lvl').forEach(e=>e.classList.remove('on'));el.classList.add('on');document.getElementById('obfDesc').textContent=DESCS[l];}
 function runObf(){const inp=document.getElementById('obfIn').value;if(!inp.trim()){toast('No input','var(--red)');return;}const out=obfuscate(inp,obfLevel);document.getElementById('obfOut').value=out;const r=Math.round((out.length/inp.length)*100);document.getElementById('obfStats').textContent=`${inp.length} → ${out.length} (${r}%)`;obfHistory.unshift({level:obfLevel,output:out,time:new Date().toLocaleTimeString()});if(obfHistory.length>5)obfHistory.pop();renderObfHist();toast('✓ Obfuscated ('+obfLevel+')','var(--accent3)');}
 function renderObfHist(){const hp=document.getElementById('obfHistPanel'),hl=document.getElementById('obfHistList');if(!obfHistory.length){hp.style.display='none';return;}hp.style.display='block';hl.innerHTML='';obfHistory.forEach((h,i)=>{const d=document.createElement('div');d.style.cssText='display:flex;align-items:center;justify-content:space-between;padding:8px 10px;background:var(--bg2);border:1px solid var(--border2);border-radius:6px;margin-bottom:6px;font-size:11px;';d.innerHTML=`<span style="color:var(--text2)">${h.time} · <span style="color:var(--accent)">${h.level}</span></span><button class="btn btn-ghost btn-sm" onclick="navigator.clipboard.writeText(obfHistory[${i}].output);toast('✓ Copied','var(--accent3)')">COPY</button>`;hl.appendChild(d);});}
-function obfuscate(c,l){return l==='light'?obfL(c):l==='medium'?obfM(c):obfX(c);}
-function obfL(c){return '--// Lunix Obfuscator | Light | yuki\n'+renameL(c);}
-function obfM(c){const k=~~(Math.random()*180+20),e=s2b(c).map(b=>b^k);return `--// Lunix Obfuscator | Medium | yuki\nlocal _k=${k}\nlocal _d={${e}}\nlocal _o={}\nfor _i=1,#_d do _o[_i]=string.char(_d[_i]^_k) end\nload(table.concat(_o))()`;}
-function obfX(c){const k1=~~(Math.random()*120+30),k2=~~(Math.random()*120+30),e=s2b(c).map(b=>(b^k1)^k2),j=Array.from({length:8},()=>'--[['+rh(12)+']]').join('\n'),v1=rh(5),v2=rh(5),v3=rh(5);return `--// Lunix Obfuscator | MAX | yuki\n--// ${rh(20)}\n${j}\nlocal _${v1}=${k1};local _${v2}=${k2}\nlocal _${v3}={${e}}\nlocal _r={}\nfor _i=1,#_${v3} do\n  local _b=(_${v3}[_i]^_${v2})^_${v1}\n  _r[_i]=string.char(_b)\nend\nload(table.concat(_r))()`;}
-function renameL(code){const res=new Set('and,break,do,else,elseif,end,false,for,function,goto,if,in,local,nil,not,or,repeat,return,then,true,until,while,self,_G,pairs,ipairs,type,print,tostring,tonumber,math,table,string,game,workspace,script,wait,task,Instance,Color3,Vector3,UDim2,CFrame,Enum,Ray,Drawing,pcall,xpcall,error,assert,rawget,rawset,require,load,unpack,select,next'.split(','));const map={};let ct=0;const nn=()=>'_L'+('lIiOo0Il'.split('').sort(()=>Math.random()-0.5).join('')).slice(0,4)+(ct++).toString(36);code=code.replace(/\blocal\s+([a-zA-Z_][a-zA-Z0-9_]*)\b/g,(m,n)=>{if(!res.has(n)){if(!map[n])map[n]=nn();return 'local '+map[n];}return m;});Object.entries(map).forEach(([o,r])=>{code=code.replace(new RegExp('\\b'+o+'\\b','g'),r);});return code;}
-function s2b(s){return Array.from(s).map(c=>c.charCodeAt(0));}
+function obfuscate(c,l){return l==='light'?obfLight(c):l==='medium'?obfMedium(c):obfMax(c);}
+function rv(len){const chars='abcdefghijklmnopqrstuvwxyz';let r='_';for(let i=0;i<len;i++)r+=chars[~~(Math.random()*chars.length)];return r;}
 function rh(n=8){return Array.from({length:n},()=>~~(Math.random()*16).toString(16)).join('');}
+function s2b(s){return Array.from(s).map(c=>c.charCodeAt(0));}
+
+// LIGHT: string encoding only — wraps string literals as byte arrays, safe for all executors
+function obfLight(code){
+  const header='--// Lunix | Light | lunix-oz\n';
+  // Encode all string literals "..." and '...' as byte tables
+  let out=code.replace(/"((?:[^"\\]|\\.)*)"|'((?:[^'\\]|\\.)*)'/g,(match,d,s)=>{
+    const str=d!==undefined?d:s;
+    if(!str||str.length>200)return match; // skip empty or very long
+    const bytes=Array.from(str).map(c=>c.charCodeAt(0));
+    const vn=rv(6);
+    return `(function()local ${vn}={${bytes.join(',')}};local _r='';for _i=1,#${vn} do _r=_r..string.char(${vn}[_i])end;return _r end)()`;
+  });
+  return header+out;
+}
+
+// MEDIUM: bytecode-style encoding using string.byte table + string.char reconstruction, no load()
+function obfMedium(code){
+  const vData=rv(6),vOut=rv(6),vIdx=rv(6);
+  const bytes=s2b(code);
+  const key=~~(Math.random()*80+10);
+  const enc=bytes.map(b=>(b+key)%256);
+  const header='--// Lunix | Medium | lunix-oz\n';
+  return `${header}local ${vData}={${enc.join(',')}}
+local ${vOut}={}
+local _key=${key}
+for ${vIdx}=1,#${vData} do
+  ${vOut}[${vIdx}]=string.char((${vData}[${vIdx}]-_key+256)%256)
+end
+local _src=table.concat(${vOut})
+local _fn,_err=loadstring(_src)
+if _fn then _fn() else warn("Lunix Obf Error: "..(tostring(_err))) end`;
+}
+
+// MAX: multi-layer with garbage, shuffled decode, and fake variable noise
+function obfMax(code){
+  const vData=rv(7),vOut=rv(7),vIdx=rv(7),vKey1=rv(7),vKey2=rv(7),vSrc=rv(7),vFn=rv(7);
+  const bytes=s2b(code);
+  const k1=~~(Math.random()*60+10), k2=~~(Math.random()*60+10);
+  const enc=bytes.map(b=>((b^k1)+k2)%256);
+  // Fake garbage vars
+  const fakes=Array.from({length:6},()=>`local ${rv(5)}=${~~(Math.random()*9999)}`).join('\n');
+  const junk=Array.from({length:4},()=>`--[[${ rh(16)}]]`).join('\n');
+  const header=`--// Lunix | MAX | lunix-oz\n--// ${rh(24)}\n`;
+  return `${header}${junk}
+${fakes}
+local ${vKey1}=${k1}
+local ${vKey2}=${k2}
+local ${vData}={${enc.join(',')}}
+local ${vOut}={}
+for ${vIdx}=1,#${vData} do
+  ${vOut}[${vIdx}]=string.char((${vData}[${vIdx}]-${vKey2}+256)%256 ~ ${vKey1})
+end
+local ${vSrc}=table.concat(${vOut})
+local ${vFn},_e=loadstring(${vSrc})
+if ${vFn} then ${vFn}() else warn("Lunix Error: "..tostring(_e)) end`;
+}
 function copyObf(){const v=document.getElementById('obfOut').value;if(!v){toast('Nothing','var(--red)');return;}navigator.clipboard.writeText(v).then(()=>toast('✓ Copied','var(--accent3)'));}
 function dlObf(){const v=document.getElementById('obfOut').value;if(!v){toast('Nothing','var(--red)');return;}const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([v],{type:'text/plain'}));a.download='obf_lunix.lua';a.click();}
 function swapObf(){const v=document.getElementById('obfOut').value;if(!v){toast('No output','var(--red)');return;}document.getElementById('obfIn').value=v;document.getElementById('obfOut').value='';document.getElementById('obfStats').textContent='';toast('↺ Swapped','var(--accent)');}
